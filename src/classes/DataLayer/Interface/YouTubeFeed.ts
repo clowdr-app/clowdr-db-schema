@@ -1,11 +1,11 @@
+import { Conference } from ".";
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
-import { Conference, ContentFeed, ProgramItem, ProgramSession, ProgramTrack } from ".";
 
-type SchemaT = Schema.ProgramSessionEvent;
-type K = "ProgramSessionEvent";
-const K_str: K = "ProgramSessionEvent";
+type SchemaT = Schema.YouTubeFeed;
+type K = "YouTubeFeed";
+const K_str: K = "YouTubeFeed";
 
 export default class Class extends CachedBase<K> implements SchemaT {
     constructor(
@@ -15,40 +15,12 @@ export default class Class extends CachedBase<K> implements SchemaT {
         super(conferenceId, K_str, data, parse);
     }
 
-    get directLink(): string | undefined {
-        return this.data.directLink;
-    }
-
-    get endTime(): Date {
-        return this.data.endTime;
-    }
-
-    get startTime(): Date {
-        return this.data.startTime;
+    get videoId(): string {
+        return this.data.videoId;
     }
 
     get conference(): Promise<Conference> {
         return this.uniqueRelated("conference");
-    }
-
-    get item(): Promise<ProgramItem> {
-        return this.uniqueRelated("item");
-    }
-
-    get sessionId(): string {
-        return this.data.session;
-    }
-
-    get session(): Promise<ProgramSession> {
-        return this.uniqueRelated("session");
-    }
-
-    get track(): Promise<ProgramTrack> {
-        return this.uniqueRelated("session").then(x => x.track);
-    }
-
-    get feed(): Promise<ContentFeed | undefined> {
-        return this.uniqueRelated("feed").catch(() => undefined);
     }
 
     static get(id: string, conferenceId: string): Promise<Class | null> {

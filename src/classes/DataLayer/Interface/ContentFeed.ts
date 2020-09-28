@@ -1,7 +1,7 @@
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
-import { Conference, ProgramSession, TextChat, VideoRoom, ZoomRoom } from ".";
+import { Conference, ProgramSession, TextChat, VideoRoom, YouTubeFeed, ZoomRoom } from ".";
 
 type SchemaT = Schema.ContentFeed;
 type K = "ContentFeed";
@@ -57,6 +57,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get videoRoom(): Promise<VideoRoom | undefined> {
         return this.uniqueRelated("videoRoom").catch(() => undefined);
+    }
+
+    get youtube(): Promise<YouTubeFeed | undefined> {
+        return this.uniqueRelated("youtube").catch(() => undefined);
     }
 
     get zoomRoom(): Promise<ZoomRoom | undefined> {

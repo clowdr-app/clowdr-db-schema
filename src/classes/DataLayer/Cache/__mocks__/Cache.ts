@@ -39,8 +39,8 @@ export default class Cache {
                 TextChatMessage: Interface.TextChatMessage,
                 VideoRoom: Interface.VideoRoom,
                 _User: Interface._User,
-                UserPresence: Interface.UserPresence,
                 UserProfile: Interface.UserProfile,
+                YouTubeFeed: Interface.YouTubeFeed,
                 ZoomHostAccount: Interface.ZoomHostAccount,
                 ZoomRoom: Interface.ZoomRoom
             };
@@ -66,6 +66,7 @@ export default class Cache {
             ProgramTrack: keys<Schema.ProgramTrack>(),
             Conference: keys<Schema.Conference>(),
             PrivilegedConferenceDetails: keys<Schema.PrivilegedConferenceDetails>(),
+            YouTubeFeed: keys<Schema.YouTubeFeed>(),
         };
 
     readonly Relations: {
@@ -86,6 +87,7 @@ export default class Cache {
             ProgramTrack: keys<PromisedFields<Schema.ProgramTrack>>(),
             Conference: keys<PromisedFields<Schema.Conference>>(),
             PrivilegedConferenceDetails: keys<PromisedFields<Schema.PrivilegedConferenceDetails>>(),
+            YouTubeFeed: keys<PromisedFields<Schema.YouTubeFeed>>(),
         };
 
     readonly UniqueRelations: {
@@ -106,6 +108,7 @@ export default class Cache {
             ProgramTrack: keys<PromisedNonArrayFields<Schema.ProgramTrack>>(),
             Conference: keys<PromisedNonArrayFields<Schema.Conference>>(),
             PrivilegedConferenceDetails: keys<PromisedNonArrayFields<Schema.PrivilegedConferenceDetails>>(),
+            YouTubeFeed: keys<PromisedNonArrayFields<Schema.YouTubeFeed>>(),
         };
 
     readonly NonUniqueRelations: {
@@ -126,6 +129,7 @@ export default class Cache {
             ProgramTrack: keys<PromisedArrayFields<Schema.ProgramTrack>>(),
             Conference: keys<PromisedArrayFields<Schema.Conference>>(),
             PrivilegedConferenceDetails: keys<PromisedArrayFields<Schema.PrivilegedConferenceDetails>>(),
+            YouTubeFeed: keys<PromisedArrayFields<Schema.YouTubeFeed>>(),
         };
 
     readonly KEY_PATH: "id" = "id";

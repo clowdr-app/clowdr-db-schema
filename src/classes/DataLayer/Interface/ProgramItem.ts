@@ -1,6 +1,6 @@
 import * as Schema from "../Schema";
 import { CachedBase, StaticCachedBase, StaticBaseImpl, LocalDataT } from "./Base";
-import { Conference, ProgramPerson, ProgramTrack, ProgramItemAttachment, ProgramSessionEvent } from ".";
+import { Conference, ProgramPerson, ProgramTrack, ProgramItemAttachment, ProgramSessionEvent, ContentFeed } from ".";
 import { PromisesRemapped } from "../WholeSchema";
 
 type SchemaT = Schema.ProgramItem;
@@ -17,6 +17,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get abstract(): string {
         return this.data.abstract;
+    }
+
+    get exhibit(): boolean {
+        return this.data.exhibit;
     }
 
     get posterImage(): Parse.File | undefined {
@@ -37,6 +41,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get track(): Promise<ProgramTrack> {
         return this.uniqueRelated("track");
+    }
+
+    get feed(): Promise<ContentFeed | undefined> {
+        return this.uniqueRelated("feed").catch(() => undefined);
     }
 
     get attachments(): Promise<ProgramItemAttachment[]> {

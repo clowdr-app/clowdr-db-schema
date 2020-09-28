@@ -1,4 +1,4 @@
-import { Conference } from ".";
+import { Conference, TextChat } from ".";
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
@@ -33,6 +33,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get conference(): Promise<Conference> {
         return this.uniqueRelated("conference");
+    }
+
+    get textChat(): Promise<TextChat | undefined> {
+        return this.uniqueRelated("textChat").catch(() => undefined);
     }
 
     static get(id: string, conferenceId: string): Promise<Class | null> {

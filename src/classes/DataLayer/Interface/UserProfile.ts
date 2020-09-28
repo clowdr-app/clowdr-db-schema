@@ -1,7 +1,7 @@
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
-import { Conference, Flair, UserPresence, ProgramPerson, _User } from ".";
+import { Conference, Flair, ProgramPerson, _User } from ".";
 
 type SchemaT = Schema.UserProfile;
 type K = "UserProfile";
@@ -123,10 +123,6 @@ export default class Class extends CachedBase<K> implements SchemaT {
         value.then(x => {
             this.data.primaryFlair = x.id;
         });
-    }
-
-    get presence(): Promise<UserPresence> {
-        return this.uniqueRelated("presence");
     }
 
     get programPersons(): Promise<ProgramPerson[]> {

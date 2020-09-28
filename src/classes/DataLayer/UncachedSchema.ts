@@ -24,11 +24,6 @@ export default interface UncachedSchema extends IDB.DBSchema {
         value: Schema._User;
         indexes: Indexes<Schema._User>;
     };
-    UserPresence: {
-        key: string;
-        value: Schema.UserPresence;
-        indexes: Indexes<Schema.UserPresence>;
-    };
     ZoomHostAccount: {
         key: string;
         value: Schema.ZoomHostAccount;

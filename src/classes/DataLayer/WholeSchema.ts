@@ -61,7 +61,8 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     ProgramItem: {
         conference: "Conference",
         authors: "ProgramPerson",
-        track: "ProgramTrack"
+        track: "ProgramTrack",
+        feed: "ContentFeed",
     },
     ProgramItemAttachment: {
         attachmentType: "AttachmentType",
@@ -76,6 +77,7 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
         zoomRoom: "ZoomRoom",
         textChat: "TextChat",
         videoRoom: "VideoRoom",
+        youtube: "YouTubeFeed",
     },
     ProgramSession: {
         conference: "Conference",
@@ -84,11 +86,13 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     },
     ProgramSessionEvent: {
         conference: "Conference",
+        feed: "ContentFeed",
         item: "ProgramItem",
         session: "ProgramSession",
     },
     ProgramTrack: {
         conference: "Conference",
+        feed: "ContentFeed",
     },
     Registration: {
         conference: "Conference",
@@ -101,12 +105,8 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     _User: {
         profiles: "UserProfile"
     },
-    UserPresence: {
-        profile: "UserProfile",
-    },
     UserProfile: {
         conference: "Conference",
-        presence: "UserPresence",
         primaryFlair: "Flair",
         user: "_User",
         flairs: "Flair"
@@ -125,6 +125,10 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
         chat: "TextChat"
     },
     VideoRoom: {
+        conference: "Conference",
+        textChat: "TextChat",
+    },
+    YouTubeFeed: {
         conference: "Conference"
     }
 };

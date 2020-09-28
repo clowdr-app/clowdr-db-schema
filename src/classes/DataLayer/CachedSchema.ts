@@ -103,4 +103,9 @@ export default interface CachedSchema extends CachableDBSchema {
         value: Schema.VideoRoom;
         indexes: Indexes<Schema.VideoRoom>;
     };
+    YouTubeFeed: {
+        key: string;
+        value: Schema.YouTubeFeed;
+        indexes: Indexes<Schema.YouTubeFeed>;
+    }
 }

@@ -265,15 +265,15 @@ function generateProgramTracksCode(datas, conference, origStartTime) {
     shortName: "${shortName}",
     
     _acl: {
-        "role:${conference}-RoleAdmin": { w: true },
-        "role:${conference}-RoleManager": { w: true },
-        "role:${conference}-RoleAttendee": { r: true }
+        "role:${conference}-admin": { w: true },
+        "role:${conference}-manager": { w: true },
+        "role:${conference}-attendee": { r: true }
     },
     _wperm: [
-        "role:${conference}-RoleAdmin",
-        "role:${conference}-RoleManager",
+        "role:${conference}-admin",
+        "role:${conference}-manager",
     ],
-    _rperm: ["role:${conference}-RoleAttendee"],
+    _rperm: ["role:${conference}-attendee"],
 });`);
     }
     return code;
@@ -306,15 +306,15 @@ function generateProgramSessionsCode(datas, conference, origStartTime, roomKeys,
     track: "${conference}-track-${trackIdx}",
     
     _acl: {
-        "role:${conference}-RoleAdmin": { w: true },
-        "role:${conference}-RoleManager": { w: true },
-        "role:${conference}-RoleAttendee": { r: true }
+        "role:${conference}-admin": { w: true },
+        "role:${conference}-manager": { w: true },
+        "role:${conference}-attendee": { r: true }
     },
     _wperm: [
-        "role:${conference}-RoleAdmin",
-        "role:${conference}-RoleManager",
+        "role:${conference}-admin",
+        "role:${conference}-manager",
     ],
-    _rperm: ["role:${conference}-RoleAttendee"],
+    _rperm: ["role:${conference}-attendee"],
 });`);
     }
     return code;
@@ -339,15 +339,15 @@ function generateProgramRoomsCode(datas, conference, origStartTime) {
     zoomRoom: undefined,
     
     _acl: {
-        "role:${conference}-RoleAdmin": { w: true },
-        "role:${conference}-RoleManager": { w: true },
-        "role:${conference}-RoleAttendee": { r: true }
+        "role:${conference}-admin": { w: true },
+        "role:${conference}-manager": { w: true },
+        "role:${conference}-attendee": { r: true }
     },
     _wperm: [
-        "role:${conference}-RoleAdmin",
-        "role:${conference}-RoleManager",
+        "role:${conference}-admin",
+        "role:${conference}-manager",
     ],
-    _rperm: ["role:${conference}-RoleAttendee"],
+    _rperm: ["role:${conference}-attendee"],
 });`);
     }
     return code;
@@ -382,15 +382,15 @@ function generateProgramItemsCode(datas, conference, origStartTime, personKeys, 
     track: "${conference}-track-${trackIdx}",
     
     _acl: {
-        "role:${conference}-RoleAdmin": { w: true },
-        "role:${conference}-RoleManager": { w: true },
-        "role:${conference}-RoleAttendee": { r: true }
+        "role:${conference}-admin": { w: true },
+        "role:${conference}-manager": { w: true },
+        "role:${conference}-attendee": { r: true }
     },
     _wperm: [
-        "role:${conference}-RoleAdmin",
-        "role:${conference}-RoleManager",
+        "role:${conference}-admin",
+        "role:${conference}-manager",
     ],
-    _rperm: ["role:${conference}-RoleAttendee"],
+    _rperm: ["role:${conference}-attendee"],
 });`);
     }
     return code;
@@ -413,15 +413,15 @@ function generateProgramPersonsCode(datas, conference, origStartTime) {
     profile: undefined,
     
     _acl: {
-        "role:${conference}-RoleAdmin": { w: true },
-        "role:${conference}-RoleManager": { w: true },
-        "role:${conference}-RoleAttendee": { r: true }
+        "role:${conference}-admin": { w: true },
+        "role:${conference}-manager": { w: true },
+        "role:${conference}-attendee": { r: true }
     },
     _wperm: [
-        "role:${conference}-RoleAdmin",
-        "role:${conference}-RoleManager",
+        "role:${conference}-admin",
+        "role:${conference}-manager",
     ],
-    _rperm: ["role:${conference}-RoleAttendee"],
+    _rperm: ["role:${conference}-attendee"],
 });`);
     }
     return code;
@@ -453,15 +453,15 @@ function generateProgramEventsCode(datas, conference, origStartTime, itemKeys, s
     session: "${conference}-session-${sessionIdx}",
     
     _acl: {
-        "role:${conference}-RoleAdmin": { w: true },
-        "role:${conference}-RoleManager": { w: true },
-        "role:${conference}-RoleAttendee": { r: true }
+        "role:${conference}-admin": { w: true },
+        "role:${conference}-manager": { w: true },
+        "role:${conference}-attendee": { r: true }
     },
     _wperm: [
-        "role:${conference}-RoleAdmin",
-        "role:${conference}-RoleManager",
+        "role:${conference}-admin",
+        "role:${conference}-manager",
     ],
-    _rperm: ["role:${conference}-RoleAttendee"],
+    _rperm: ["role:${conference}-attendee"],
 });`);
     }
     return code;

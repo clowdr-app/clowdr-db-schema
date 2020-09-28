@@ -34,7 +34,7 @@
         ]
     },
     "scripts": {
-        "convert-program-csv": "node scripts/programCSV2TestDataGen.js -i sample-program-upload.csv -o sample-program-data.js --ost \"2020-09-28 12:00\""
+        "convert-program-csv": "node scripts/programCSV2TestDataGen.js -i sample-program-upload.csv -o sample-program-data.js --ost \"2020-09-02 12:00\""
     },
     "eslintConfig": {
         "extends": "react-app"

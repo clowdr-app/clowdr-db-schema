@@ -5,9 +5,15 @@ const csvParse = require('csv-parse/lib/sync');
 const moment = require('moment-timezone');
 
 const argv = yargs
-    .option("in", {
-        alias: "i",
-        description: "The CSV data file to convert",
+    .option("inProgram", {
+        alias: "ip",
+        description: "The Program CSV data file to convert",
+        type: "string",
+        demandOption: true
+    })
+    .option("inFeeds", {
+        alias: "ic",
+        description: "The Room CSV data file to convert",
         type: "string",
         demandOption: true
     })
@@ -45,22 +51,24 @@ const argv = yargs
 main();
 
 function main() {
-    const inputFile = argv.in;
+    const inputProgramFile = argv.inProgram;
+    const inputFeedsFile = argv.inFeeds;
     const outputFile = argv.out;
     const timezone = argv.timezone;
     const origStartTime = moment.tz(argv["original-start-time"], timezone);
     const conference = argv.conference;
 
-    console.log(`Input file          : ${inputFile}`);
+    console.log(`Input program file  : ${inputProgramFile}`);
+    console.log(`Input feeds file    : ${inputFeedsFile}`);
     console.log(`Output file         : ${outputFile}`);
     console.log(`Timezone            : ${timezone}`);
     console.log(`Original start time : ${origStartTime}`);
     console.log(`Conference          : ${conference}`);
     console.log("=====================");
 
-    const data = fs.readFileSync(inputFile).toString();
+    const data = fs.readFileSync(inputProgramFile).toString();
 
-    const { sessions, feeds, items, persons, events, tracks } = processInputData(data, timezone);
+    const { sessions, feeds, items, persons, events, tracks } = processInputProgramData(data, timezone);
 
     const sessionKeys = Object.keys(sessions);
     const feedKeys = Object.keys(feeds);
@@ -136,7 +144,7 @@ ${eventsCode.reduce((acc, x) => acc + x + "\n\n", "")}
     console.log("Done");
 }
 
-function processInputData(data, timezone) {
+function processInputProgramData(data, timezone) {
     const records = csvParse(data, {
         columns: true, trim: true, skip_empty_lines: true
     });
@@ -259,8 +267,6 @@ function generateProgramTracksCode(datas, conference, origStartTime) {
     updatedAt: new Date(),
 
     colour: "#000000",
-    generateTextChatPerItem: true,
-    generateVideoRoomPerItem: true,
     name: "${name}",
     shortName: "${shortName}",
     
@@ -337,6 +343,7 @@ function generateContentFeedsCode(datas, conference, origStartTime) {
     textChat: undefined,
     videoRoom: undefined,
     zoomRoom: undefined,
+    youtube: undefined,
     
     _acl: {
         "role:${conference}-admin": { w: true },
@@ -450,6 +457,7 @@ function generateProgramEventsCode(datas, conference, origStartTime, itemKeys, s
     startTime: new Date(${startTime}),
     item: "${conference}-item-${itemIdx}",
     session: "${conference}-session-${sessionIdx}",
+    feed: undefined,
     
     _acl: {
         "role:${conference}-admin": { w: true },

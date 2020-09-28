@@ -1,5 +1,5 @@
 import { Base } from ".";
-import { Conference, ProgramItem, ProgramSession } from "../Interface";
+import { Conference, ContentFeed, ProgramItem, ProgramSession } from "../Interface";
 
 export default interface Schema extends Base {
     directLink: string | undefined;
@@ -7,6 +7,7 @@ export default interface Schema extends Base {
     startTime: Date;
 
     conference: Promise<Conference>;
+    feed: Promise<ContentFeed | undefined>;
     item: Promise<ProgramItem>;
     session: Promise<ProgramSession>;
 }

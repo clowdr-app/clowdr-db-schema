@@ -440,7 +440,7 @@ export default class Cache {
                                 let isProgramTable = this.ProgramTableNames.includes(store);
                                 let shouldUpdate =
                                         isProgramTable
-                                        ? remoteLastProgramUpdateTime > localRefillTime
+                                        ? remoteLastProgramUpdateTime.getTime() > localRefillTime.getTime() - 3600
                                         : localRefillTime.getTime() + this.cacheInactiveTime < now;
 
                                 if (shouldUpdate) {

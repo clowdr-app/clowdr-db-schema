@@ -10,3 +10,5 @@ db/schema-base/_JobStatus.metadata.json
 
 sample-program-data.js
 *.csv
+
+/build

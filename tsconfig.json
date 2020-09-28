@@ -20,6 +20,7 @@
         "noImplicitReturns": true,
         "jsx": "react",
         "downlevelIteration": true,
+        "declaration": true,
         "outDir": "build",
         "noImplicitAny": true,
         "strictNullChecks": true,

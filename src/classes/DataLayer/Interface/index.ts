@@ -8,7 +8,7 @@ export { default as PrivilegedConferenceDetails } from "./PrivilegedConferenceDe
 export { default as ProgramItem } from "./ProgramItem";
 export { default as ProgramItemAttachment } from "./ProgramItemAttachment";
 export { default as ProgramPerson } from "./ProgramPerson";
-export { default as ProgramRoom } from "./ProgramRoom";
+export { default as ContentFeed } from "./ContentFeed";
 export { default as ProgramSession } from "./ProgramSession";
 export { default as ProgramSessionEvent } from "./ProgramSessionEvent";
 export { default as ProgramTrack } from "./ProgramTrack";

@@ -63,10 +63,10 @@ export default interface CachedSchema extends CachableDBSchema {
         value: Schema.ProgramItemAttachment;
         indexes: Indexes<Schema.ProgramItemAttachment>;
     };
-    ProgramRoom: {
+    ContentFeed: {
         key: string;
-        value: Schema.ProgramRoom;
-        indexes: Indexes<Schema.ProgramRoom>;
+        value: Schema.ContentFeed;
+        indexes: Indexes<Schema.ContentFeed>;
     };
     ProgramSession: {
         key: string;

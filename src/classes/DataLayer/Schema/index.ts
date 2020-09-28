@@ -9,7 +9,7 @@ export type { default as PrivilegedConferenceDetails } from "./PrivilegedConfere
 export type { default as ProgramItem } from "./ProgramItem";
 export type { default as ProgramItemAttachment } from "./ProgramItemAttachment";
 export type { default as ProgramPerson } from "./ProgramPerson";
-export type { default as ProgramRoom } from "./ProgramRoom";
+export type { default as ContentFeed } from "./ContentFeed";
 export type { default as ProgramSession } from "./ProgramSession";
 export type { default as ProgramSessionEvent } from "./ProgramSessionEvent";
 export type { default as ProgramTrack } from "./ProgramTrack";

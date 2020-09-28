@@ -71,7 +71,7 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
         conference: "Conference",
         profile: "UserProfile",
     },
-    ProgramRoom: {
+    ContentFeed: {
         conference: "Conference",
         zoomRoom: "ZoomRoom",
         textChat: "TextChat",
@@ -80,7 +80,7 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     ProgramSession: {
         conference: "Conference",
         track: "ProgramTrack",
-        room: "ProgramRoom"
+        feed: "ContentFeed"
     },
     ProgramSessionEvent: {
         conference: "Conference",

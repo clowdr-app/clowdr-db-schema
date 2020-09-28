@@ -60,17 +60,17 @@ function main() {
 
     const data = fs.readFileSync(inputFile).toString();
 
-    const { sessions, rooms, items, persons, events, tracks } = processInputData(data, timezone);
+    const { sessions, feeds, items, persons, events, tracks } = processInputData(data, timezone);
 
     const sessionKeys = Object.keys(sessions);
-    const roomKeys = Object.keys(rooms);
+    const feedKeys = Object.keys(feeds);
     const itemKeys = Object.keys(items);
     const personKeys = Object.keys(persons);
     const trackKeys = Object.keys(tracks);
 
     const tracksCode = generateProgramTracksCode(tracks, conference, origStartTime);
-    const sessionsCode = generateProgramSessionsCode(sessions, conference, origStartTime, roomKeys, trackKeys);
-    const roomsCode = generateProgramRoomsCode(rooms, conference, origStartTime);
+    const sessionsCode = generateProgramSessionsCode(sessions, conference, origStartTime, feedKeys, trackKeys);
+    const feedsCode = generateContentFeedsCode(feeds, conference, origStartTime);
     const itemsCode = generateProgramItemsCode(items, conference, origStartTime, personKeys, trackKeys);
     const personsCode = generateProgramPersonsCode(persons, conference, origStartTime);
     const eventsCode = generateProgramEventsCode(events, conference, origStartTime, itemKeys, sessionKeys);
@@ -96,10 +96,10 @@ ${sessionsCode.reduce((acc, x) => acc + x + "\n\n", "")}
 `);
 
     code = code.concat(`
-function generateProgramRoom() {
+function generateContentFeed() {
     let result = [];
 
-${roomsCode.reduce((acc, x) => acc + x + "\n\n", "")}
+${feedsCode.reduce((acc, x) => acc + x + "\n\n", "")}
     return result;
 }
 `);
@@ -142,7 +142,7 @@ function processInputData(data, timezone) {
     });
     let tracks = {};
     let sessions = {};
-    let rooms = {};
+    let feeds = {};
     let items = {};
     let persons = {};
     let events = [];
@@ -153,20 +153,20 @@ function processInputData(data, timezone) {
         }
         let track = tracks[tName];
         let rName = record["Room Name"];
-        if (rName && !rooms[rName]) {
-            rooms[rName] = { name: rName, obj: undefined };
+        if (rName && !feeds[rName]) {
+            feeds[rName] = { name: rName, obj: undefined };
         }
-        let room = rName ? rooms[rName] : undefined;
+        let feed = rName ? feeds[rName] : undefined;
         let sName = record["Session Name"];
         if (sName && !sessions[sName]) {
             sessions[sName] = {
-                name: sName, room: room, obj: undefined,
+                name: sName, feed: feed, obj: undefined,
                 track: track
             };
         }
         let session = sName ? sessions[sName] : undefined;
-        if (session && session.room !== room) {
-            throw new Error("Session " + sName + " found in multiple rooms: " + rName + " and " + session.room.name + ". Please make sure that each session is assigned to exactly one room");
+        if (session && session.feed !== feed) {
+            throw new Error("Session " + sName + " found in multiple feeds: " + rName + " and " + session.feed.name + ". Please make sure that each session is assigned to exactly one feed");
         }
         let iName = record['Event Title'];
         if (!items[iName]) {
@@ -227,7 +227,7 @@ function processInputData(data, timezone) {
         //     });
         // }
     }
-    return { sessions, rooms, items, persons, events, tracks };
+    return { sessions, feeds, items, persons, events, tracks };
 }
 
 function transformTime(time, origStartTime) {
@@ -279,15 +279,15 @@ function generateProgramTracksCode(datas, conference, origStartTime) {
     return code;
 }
 
-function generateProgramSessionsCode(datas, conference, origStartTime, roomKeys, trackKeys) {
+function generateProgramSessionsCode(datas, conference, origStartTime, feedKeys, trackKeys) {
     const code = [];
     const keys = Object.keys(datas);
     for (let idx = 0; idx < keys.length; idx++) {
         const data = datas[keys[idx]];
         const title = data.name;
-        const roomName = data.room.name;
+        const feedName = data.feed.name;
         const trackName = data.track.name;
-        const roomIdx = roomKeys.indexOf(roomName);
+        const feedIdx = feedKeys.indexOf(feedName);
         const trackIdx = trackKeys.indexOf(trackName);
         
         const endTime = transformTime(data.eTime, origStartTime).valueOf();
@@ -302,7 +302,7 @@ function generateProgramSessionsCode(datas, conference, origStartTime, roomKeys,
     title: "${title}",
     endTime: new Date(${endTime}),
     startTime: new Date(${startTime}),
-    room: "${conference}-room-${roomIdx}",
+    feed: "${conference}-feed-${feedIdx}",
     track: "${conference}-track-${trackIdx}",
     
     _acl: {
@@ -320,7 +320,7 @@ function generateProgramSessionsCode(datas, conference, origStartTime, roomKeys,
     return code;
 }
 
-function generateProgramRoomsCode(datas, conference, origStartTime) {
+function generateContentFeedsCode(datas, conference, origStartTime) {
     const code = [];
     const keys = Object.keys(datas);
     for (let idx = 0; idx < keys.length; idx++) {
@@ -330,7 +330,7 @@ function generateProgramRoomsCode(datas, conference, origStartTime) {
         code.push(
             `result.push({
     conference: "${conference}",
-    id: "${conference}-room-${idx}",
+    id: "${conference}-feed-${idx}",
     createdAt: new Date(),
     updatedAt: new Date(),
     name: "${name}",
@@ -375,7 +375,6 @@ function generateProgramItemsCode(datas, conference, origStartTime, personKeys, 
     createdAt: new Date(),
     updatedAt: new Date(),
     abstract: "${abstract}",
-    isPrivate: false,
     posterImage: undefined,
     title: "${title}",
     authors: ${JSON.stringify(authorIdxs.map(x => `${conference}-person-${x}`))},

@@ -3,9 +3,9 @@ import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
 import { Conference, ProgramSession, TextChat, VideoRoom, ZoomRoom } from ".";
 
-type SchemaT = Schema.ProgramRoom;
-type K = "ProgramRoom";
-const K_str: K = "ProgramRoom";
+type SchemaT = Schema.ContentFeed;
+type K = "ContentFeed";
+const K_str: K = "ContentFeed";
 
 export default class Class extends CachedBase<K> implements SchemaT {
     constructor(
@@ -64,7 +64,7 @@ export default class Class extends CachedBase<K> implements SchemaT {
     }
 
     get sessions(): Promise<Array<ProgramSession>> {
-        return StaticBaseImpl.getAllByField("ProgramSession", "room", this.id, this.conferenceId);
+        return StaticBaseImpl.getAllByField("ProgramSession", "feed", this.id, this.conferenceId);
     }
 
 

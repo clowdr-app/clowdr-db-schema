@@ -4,7 +4,6 @@ import Parse from "parse";
 
 export default interface Schema extends Base {
     abstract: string;
-    isPrivate: boolean;
     posterImage: Parse.File | undefined;
     title: string;
 

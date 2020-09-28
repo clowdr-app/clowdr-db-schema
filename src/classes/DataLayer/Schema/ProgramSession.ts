@@ -1,5 +1,5 @@
 import { Base } from ".";
-import { Conference, ProgramRoom, ProgramTrack } from "../Interface";
+import { Conference, ContentFeed, ProgramTrack } from "../Interface";
 
 export default interface Schema extends Base {
     endTime: Date;
@@ -7,6 +7,6 @@ export default interface Schema extends Base {
     title: string;
 
     conference: Promise<Conference>;
-    room: Promise<ProgramRoom>;
+    feed: Promise<ContentFeed>;
     track: Promise<ProgramTrack>;
 }

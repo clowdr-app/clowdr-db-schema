@@ -1,7 +1,7 @@
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
-import { Conference, ProgramSessionEvent, ProgramItem, ProgramRoom, ProgramTrack } from ".";
+import { Conference, ProgramSessionEvent, ProgramItem, ContentFeed, ProgramTrack } from ".";
 
 type SchemaT = Schema.ProgramSession;
 type K = "ProgramSession";
@@ -42,8 +42,8 @@ export default class Class extends CachedBase<K> implements SchemaT {
         });
     }
 
-    get room(): Promise<ProgramRoom> {
-        return this.uniqueRelated("room");
+    get feed(): Promise<ContentFeed> {
+        return this.uniqueRelated("feed");
     }
 
     get track(): Promise<ProgramTrack> {

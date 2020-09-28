@@ -19,10 +19,6 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.abstract;
     }
 
-    get isPrivate(): boolean {
-        return this.data.isPrivate;
-    }
-
     get posterImage(): Parse.File | undefined {
         return this.data.posterImage;
     }

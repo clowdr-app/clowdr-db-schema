@@ -1,5 +1,5 @@
 import { Base } from ".";
-import { AttachmentType, ProgramItem } from "../Interface";
+import { AttachmentType, Conference, ProgramItem } from "../Interface";
 import Parse from "parse";
 
 export default interface Schema extends Base {
@@ -7,5 +7,6 @@ export default interface Schema extends Base {
     url: string | undefined;
 
     attachmentType: Promise<AttachmentType>;
+    conference: Promise<Conference>;
     programItem: Promise<ProgramItem>;
 }

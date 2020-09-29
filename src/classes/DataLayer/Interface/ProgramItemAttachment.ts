@@ -1,6 +1,6 @@
 import * as Schema from "../Schema";
 import { CachedBase, StaticCachedBase, StaticBaseImpl, LocalDataT } from "./Base";
-import { ProgramItem, AttachmentType } from ".";
+import { ProgramItem, AttachmentType, Conference } from ".";
 import { PromisesRemapped } from "../WholeSchema";
 
 type SchemaT = Schema.ProgramItemAttachment;
@@ -25,6 +25,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get programItem(): Promise<ProgramItem> {
         return this.uniqueRelated("programItem");
+    }
+
+    get conference(): Promise<Conference> {
+        return this.uniqueRelated("conference");
     }
 
     get attachmentType(): Promise<AttachmentType> {

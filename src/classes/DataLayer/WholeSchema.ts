@@ -66,6 +66,7 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     },
     ProgramItemAttachment: {
         attachmentType: "AttachmentType",
+        conference: "Conference",
         programItem: "ProgramItem"
     },
     ProgramPerson: {

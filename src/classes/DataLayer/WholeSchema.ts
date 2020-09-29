@@ -111,12 +111,8 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
         user: "_User",
         flairs: "Flair"
     },
-    ZoomHostAccount: {
-        conference: "Conference",
-    },
     ZoomRoom: {
         conference: "Conference",
-        hostAccount: "ZoomHostAccount",
     },
     TextChat: {
         conference: "Conference"

@@ -41,7 +41,6 @@ export default class Cache {
                 _User: Interface._User,
                 UserProfile: Interface.UserProfile,
                 YouTubeFeed: Interface.YouTubeFeed,
-                ZoomHostAccount: Interface.ZoomHostAccount,
                 ZoomRoom: Interface.ZoomRoom
             };
         }

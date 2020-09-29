@@ -18,5 +18,4 @@ export { default as TextChatMessage } from "./TextChatMessage";
 export { default as UserProfile } from "./UserProfile";
 export { default as VideoRoom } from "./VideoRoom";
 export { default as YouTubeFeed } from "./YouTubeFeed";
-export { default as ZoomHostAccount } from "./ZoomHostAccount";
 export { default as ZoomRoom } from "./ZoomRoom";

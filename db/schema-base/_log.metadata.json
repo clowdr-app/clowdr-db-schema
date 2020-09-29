@@ -1,1 +1,1 @@
-{"options":{"capped":true,"size":{"$numberInt":"5242880"},"max":{"$numberInt":"1500"}},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"a0d763d644b448119b2bb061ca04bf0e","collectionName":"_log"}
+{"options":{"capped":true,"size":{"$numberInt":"5242880"},"max":{"$numberInt":"1500"}},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"d6b957518b3b4ed984da68e93ac8e311","collectionName":"_log"}

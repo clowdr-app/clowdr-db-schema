@@ -19,5 +19,4 @@ export type { default as TextChatMessage } from "./TextChatMessage";
 export type { default as UserProfile, UserProfileTag } from "./UserProfile";
 export type { default as VideoRoom } from "./VideoRoom";
 export type { default as YouTubeFeed } from "./YouTubeFeed";
-export type { default as ZoomHostAccount } from "./ZoomHostAccount";
 export type { default as ZoomRoom } from "./ZoomRoom";

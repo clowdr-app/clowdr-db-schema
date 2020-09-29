@@ -5,7 +5,7 @@ export default interface Schema extends Base {
     affiliation: string | undefined;
     country: string | undefined;
     email: string;
-    invitationSentDate: Date;
+    invitationSentDate: Date | undefined;
     name: string;
 
     conference: Promise<Conference>;

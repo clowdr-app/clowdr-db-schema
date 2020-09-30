@@ -52,7 +52,7 @@ export default class Class extends CachedBase<K> implements SchemaT {
     }
 
     get events(): Promise<ProgramSessionEvent[]> {
-        return StaticBaseImpl.getAllByField("ProgramSessionEvent", "session", this.id, this.conferenceId);
+        return StaticBaseImpl.getAllByField("ProgramSessionEvent", "item", this.id, this.conferenceId);
     }
 
     static get(id: string, conferenceId: string): Promise<Class | null> {

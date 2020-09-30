@@ -32,6 +32,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.uniqueRelated("profile").catch(() => undefined);
     }
 
+    get profileId(): string {
+        return this.data.profile;
+    }
+
     static get(id: string, conferenceId: string): Promise<Class | null> {
         return StaticBaseImpl.get(K_str, id, conferenceId);
     }

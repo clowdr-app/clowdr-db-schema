@@ -27,7 +27,7 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.name;
     }
 
-    get twilioID(): string {
+    get twilioID(): string | undefined {
         return this.data.twilioID;
     }
 

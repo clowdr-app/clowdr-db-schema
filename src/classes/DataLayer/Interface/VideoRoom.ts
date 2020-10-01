@@ -23,6 +23,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.ephemeral;
     }
 
+    get isPrivate(): boolean {
+        return this.data.isPrivate;
+    }
+
     get name(): string {
         return this.data.name;
     }

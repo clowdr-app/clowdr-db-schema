@@ -4,6 +4,7 @@ import { Conference, TextChat } from "../Interface";
 export default interface Schema extends Base {
     capacity: number;
     ephemeral: boolean;
+    isPrivate: boolean;
     name: string;
     twilioID: string | undefined;
 

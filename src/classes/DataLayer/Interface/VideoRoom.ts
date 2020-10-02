@@ -1,4 +1,4 @@
-import { Conference, TextChat, UserProfile } from ".";
+import { Conference, ContentFeed, TextChat, UserProfile } from ".";
 import { removeNull } from "../../Util";
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
@@ -50,6 +50,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get textChat(): Promise<TextChat | undefined> {
         return this.uniqueRelated("textChat").catch(() => undefined);
+    }
+
+    get feeds(): Promise<Array<ContentFeed>> {
+        return StaticBaseImpl.getAllByField("ContentFeed", "videoRoom", this.id, this.conferenceId);
     }
 
     static get(id: string, conferenceId: string): Promise<Class | null> {

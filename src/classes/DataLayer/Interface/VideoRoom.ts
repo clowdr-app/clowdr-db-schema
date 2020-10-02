@@ -1,4 +1,5 @@
-import { Conference, TextChat } from ".";
+import { Conference, TextChat, UserProfile } from ".";
+import { removeNull } from "../../Util";
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
@@ -33,6 +34,14 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get twilioID(): string | undefined {
         return this.data.twilioID;
+    }
+
+    get participants(): Array<string> {
+        return this.data.participants;
+    }
+
+    get participantProfiles(): Promise<Array<UserProfile>> {
+        return Promise.all(this.data.participants.map(id => UserProfile.get(id, this.conferenceId))).then(removeNull);
     }
 
     get conference(): Promise<Conference> {

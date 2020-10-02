@@ -6,6 +6,7 @@ export default interface Schema extends Base {
     ephemeral: boolean;
     isPrivate: boolean;
     name: string;
+    participants: Array<string>;
     twilioID: string | undefined;
 
     conference: Promise<Conference>;

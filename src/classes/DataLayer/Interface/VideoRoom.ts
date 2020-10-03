@@ -1,4 +1,4 @@
-import { Conference, ContentFeed, TextChat, UserProfile } from ".";
+import { Conference, ContentFeed, TextChat, UserProfile, _User } from ".";
 import { removeNull } from "../../Util";
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
@@ -42,6 +42,12 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get participantProfiles(): Promise<Array<UserProfile>> {
         return Promise.all(this.data.participants.map(id => UserProfile.get(id, this.conferenceId))).then(removeNull);
+    }
+
+    get userIdsWithAccess(): Promise<Array<string>> {
+        return this.getUncachedParseObject().then(async obj => {
+            return Object.keys(obj.getACL()?.permissionsById ?? {}).filter(x => !x.startsWith("role:"));
+        });
     }
 
     get conference(): Promise<Conference> {

@@ -530,6 +530,7 @@ export default class Cache {
         }
     }
 
+    private fillingCachePromises: { [K in CachedSchemaKeys]?: Promise<Array<any>> } = {};
     private async fillCache<K extends CachedSchemaKeys, T extends CachedBase<K>>(
         tableName: K,
         db: IDBPDatabase<ExtendedCachedSchema> | null = null,
@@ -543,30 +544,44 @@ export default class Cache {
             throw new Error("Cannot refresh cache when not authenticated");
         }
 
-        if (!db && this.dbPromise) {
-            db = await this.dbPromise;
+        let resultP = this.fillingCachePromises[tableName];
+        if (!resultP) {
+            this.fillingCachePromises[tableName] = resultP = new Promise(async (resolve, reject) => {
+                try {
+                    if (!db && this.dbPromise) {
+                        db = await this.dbPromise;
+                    }
+
+                    let itemsQ = await this.newParseQuery(tableName);
+                    itemsQ = itemsQ.includeAll();
+
+                    if (fillFrom) {
+                        itemsQ.greaterThanOrEqualTo("updatedAt", fillFrom as any);
+                    }
+
+                    let results: T[] = [];
+                    await itemsQ.eachBatch(async parseObjs => {
+                        const mapped = await Promise.all(parseObjs.map(parse => this.addItemToCache<K, T>(parse, tableName, db)));
+                        results = results.concat(mapped);
+                    }, {
+                        batchSize: 1000
+                    });
+
+                    if (db && fillFrom) {
+                        db.put("LocalRefillTimes", { id: tableName, lastRefillAt: new Date() });
+                    }
+
+                    this.fillingCachePromises[tableName] = undefined;
+                    resolve(results);
+                }
+                catch (e) {
+                    this.fillingCachePromises[tableName] = undefined;
+                    reject(e);
+                }
+            });
         }
 
-        let itemsQ = await this.newParseQuery(tableName);
-        itemsQ = itemsQ.includeAll();
-
-        if (fillFrom) {
-            itemsQ.greaterThanOrEqualTo("updatedAt", fillFrom as any);
-        }
-
-        let results: T[] = [];
-        await itemsQ.eachBatch(async parseObjs => {
-            const mapped = await Promise.all(parseObjs.map(parse => this.addItemToCache<K, T>(parse, tableName, db)));
-            results = results.concat(mapped);
-        }, {
-            batchSize: 1000
-        });
-
-        if (db && fillFrom) {
-            db.put("LocalRefillTimes", { id: tableName, lastRefillAt: new Date() });
-        }
-
-        return results;
+        return resultP as Promise<Array<T>>;
     }
 
     async addItemToCache<K extends CachedSchemaKeys, T extends CachedBase<K>>(

@@ -948,7 +948,8 @@ export default class Cache {
     }
 
     private async getAllFromCache<K extends CachedSchemaKeys, T extends CachedBase<K>>(
-        tableName: K
+        tableName: K,
+        filterF?: (x: ExtendedCachedSchema[K]["value"]) => boolean
     ): Promise<Array<T>> {
         if (!this.IsInitialised || !this.dbPromise) {
             return Promise.reject("Not initialised");
@@ -961,6 +962,10 @@ export default class Cache {
                 conferenceId: this.conferenceId,
                 tableName: tableName
             });
+
+            if (filterF) {
+                result = result.filter(filterF);
+            }
 
             return result.map(x => {
                 return new Cache.Constructors[tableName](this.conferenceId, x as any) as unknown as T;
@@ -1033,32 +1038,32 @@ export default class Cache {
         searchFor: LocalDataT[K][S],
     ): Promise<T | null> {
         // We should do this by defining indexes (within indexeddb) ideally...
-        const all: any[] = await this.getAllFromCache(tableName);
-        let result = null;
-        for (let current of all) {
+        function filterF(current: ExtendedCachedSchema[K]["value"]) {
             if (fieldName in RelationsToTableNames[tableName]) {
                 if (searchFor instanceof Array) {
                     let _searchFor: Array<any> = searchFor;
-                    if (_searchFor.includes(current[fieldName])) {
-                        result = current;
-                        break;
+                    if (_searchFor.includes(current[fieldName as any])) {
+                        return true;
                     }
                 }
                 else {
-                    if (current[fieldName] === searchFor) {
-                        result = current;
-                        break;
+                    if (current[fieldName as any] === searchFor) {
+                        return true;
                     }
                 }
             }
             else {
-                if (current[fieldName] === searchFor) {
-                    result = current;
-                    break;
+                if (current[fieldName as any] === searchFor) {
+                    return true;
                 }
             }
+            return false;
         }
-        return result as T | null;
+        const all: any[] = await this.getAllFromCache(tableName, filterF);
+        if (all.length > 0) {
+            return all[0];
+        }
+        return null;
     }
 
     async getAll<K extends CachedSchemaKeys, T extends CachedBase<K>>(
@@ -1090,30 +1095,27 @@ export default class Cache {
         searchFor: LocalDataT[K][S],
     ): Promise<Array<T>> {
         // We should do this by defining indexes (within indexeddb) ideally...
-        const all: any[] = await this.getAllFromCache(tableName);
-        let results: any[] = [];
-        for (let current of all) {
+        function filterF(current: ExtendedCachedSchema[K]["value"]) {
             if (fieldName in RelationsToTableNames[tableName]) {
                 if (searchFor instanceof Array) {
-                    // TODO: Test this - really, test this, and if it doesn't work - fix it in getByField too
-
                     let _searchFor: Array<any> = searchFor;
-                    if (_searchFor.includes(current[fieldName])) {
-                        results.push(current);
+                    if (_searchFor.includes(current[fieldName as any])) {
+                        return true;
                     }
                 }
                 else {
-                    if (current[fieldName] === searchFor) {
-                        results.push(current);
+                    if (current[fieldName as any] === searchFor) {
+                        return true;
                     }
                 }
             }
             else {
-                if (current[fieldName] === searchFor) {
-                    results.push(current);
+                if (current[fieldName as any] === searchFor) {
+                    return true;
                 }
             }
+            return false;
         }
-        return results as Array<T>;
+        return await this.getAllFromCache(tableName, filterF);
     }
 }

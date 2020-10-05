@@ -405,6 +405,9 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
         let r2t: Record<string, string> = RelationsToTableNames[this.tableName];
         let targetTableName = r2t[field as any];
         let targetId = this.data[field as unknown as keyof LocalDataT[K]] as any as string;
+        if (!targetId) {
+            return null as any;
+        }
         if (CachedStoreNames.includes(targetTableName as any)) {
             return cache.get(targetTableName as any, targetId).then(result => {
                 if (!result) {

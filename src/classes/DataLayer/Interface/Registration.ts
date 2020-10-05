@@ -23,6 +23,10 @@ export default class Class extends UncachedBase<K> implements SchemaT {
     get email(): string {
         return this.parse.get("email");
     }
+    
+    get newRole(): string {
+        return this.parse.get("newRole");
+    }
 
     get invitationSentDate(): Date | undefined {
         return this.parse.get("invitationSentDate");

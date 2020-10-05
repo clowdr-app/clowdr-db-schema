@@ -7,6 +7,7 @@ export default interface Schema extends Base {
     email: string;
     invitationSentDate: Date | undefined;
     name: string;
+    newRole: string;
 
     conference: Promise<Conference>;
 }

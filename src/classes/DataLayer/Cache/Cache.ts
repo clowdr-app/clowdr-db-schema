@@ -1022,6 +1022,44 @@ export default class Cache {
             }
         }
     }
+    
+    async getByField<
+        K extends CachedSchemaKeys,
+        S extends KnownKeys<LocalDataT[K]>,
+        T extends CachedBase<K>
+    >(
+        tableName: K,
+        fieldName: S,
+        searchFor: LocalDataT[K][S],
+    ): Promise<T | null> {
+        // We should do this by defining indexes (within indexeddb) ideally...
+        const all: any[] = await this.getAllFromCache(tableName);
+        let result = null;
+        for (let current of all) {
+            if (fieldName in RelationsToTableNames[tableName]) {
+                if (searchFor instanceof Array) {
+                    let _searchFor: Array<any> = searchFor;
+                    if (_searchFor.includes(current[fieldName])) {
+                        result = current;
+                        break;
+                    }
+                }
+                else {
+                    if (current[fieldName] === searchFor) {
+                        result = current;
+                        break;
+                    }
+                }
+            }
+            else {
+                if (current[fieldName] === searchFor) {
+                    result = current;
+                    break;
+                }
+            }
+        }
+        return result as T | null;
+    }
 
     async getAll<K extends CachedSchemaKeys, T extends CachedBase<K>>(
         tableName: K
@@ -1040,5 +1078,42 @@ export default class Cache {
                 return [];
             });
         }) as Promise<Array<T>>;
+    }
+
+    async getAllByField<
+        K extends CachedSchemaKeys,
+        S extends KnownKeys<LocalDataT[K]>,
+        T extends CachedBase<K>
+    >(
+        tableName: K,
+        fieldName: S,
+        searchFor: LocalDataT[K][S],
+    ): Promise<Array<T>> {
+        // We should do this by defining indexes (within indexeddb) ideally...
+        const all: any[] = await this.getAllFromCache(tableName);
+        let results: any[] = [];
+        for (let current of all) {
+            if (fieldName in RelationsToTableNames[tableName]) {
+                if (searchFor instanceof Array) {
+                    // TODO: Test this - really, test this, and if it doesn't work - fix it in getByField too
+
+                    let _searchFor: Array<any> = searchFor;
+                    if (_searchFor.includes(current[fieldName])) {
+                        results.push(current);
+                    }
+                }
+                else {
+                    if (current[fieldName] === searchFor) {
+                        results.push(current);
+                    }
+                }
+            }
+            else {
+                if (current[fieldName] === searchFor) {
+                    results.push(current);
+                }
+            }
+        }
+        return results as Array<T>;
     }
 }

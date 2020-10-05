@@ -164,47 +164,57 @@ export abstract class StaticBaseImpl {
         searchFor: LocalDataT[K][S],
         conferenceId?: string
     ): Promise<T | null> {
-        // TODO: Can we put this through the cache?
-        // Only if we can define relevant indexes on the cache (within indexeddb)
-        let query = new Parse.Query<Parse.Object<PromisesRemapped<WholeSchema[K]["value"]>>>(tableName);
-        if (fieldName in RelationsToTableNames[tableName]) {
-            if (searchFor instanceof Array) {
-                let _searchFor: Array<string> = searchFor;
-                query.containedIn(fieldName as any, _searchFor.map(x => {
-                    return new Parse.Object(RelationsToTableNames[tableName][fieldName as any], {
-                        id: x
-                    }) as any;
-                }));
+        let result: T | null = null;
+        if (StaticBaseImpl.IsCachable(tableName, conferenceId)) {
+            const _tableName = tableName as CachedSchemaKeys;
+            const cache = await Caches.get(conferenceId);
+            result = await cache.getByField(_tableName, fieldName as any, searchFor) as unknown as T;
+        }
+
+        if (!result) {
+            let query = new Parse.Query<Parse.Object<PromisesRemapped<WholeSchema[K]["value"]>>>(tableName);
+            if (fieldName in RelationsToTableNames[tableName]) {
+                if (searchFor instanceof Array) {
+                    let _searchFor: Array<string> = searchFor;
+                    query.containedIn(fieldName as any, _searchFor.map(x => {
+                        return new Parse.Object(RelationsToTableNames[tableName][fieldName as any], {
+                            id: x
+                        }) as any;
+                    }));
+                }
+                else {
+                    query.equalTo(fieldName as any, new Parse.Object(RelationsToTableNames[tableName][fieldName as any], {
+                        id: searchFor
+                    }) as any);
+                }
             }
             else {
-                query.equalTo(fieldName as any, new Parse.Object(RelationsToTableNames[tableName][fieldName as any], {
-                    id: searchFor
-                }) as any);
+                query.equalTo(fieldName as any, searchFor as any);
             }
+            if (conferenceId) {
+                query.equalTo("conference" as any, new Parse.Object("Conference", { id: conferenceId }) as any);
+            }
+
+            let itemP = query.first();
+            return itemP.then(async parse => {
+                if (parse) {
+                    return StaticBaseImpl.wrapItem<K, T>(tableName, parse);
+                }
+                return null;
+            }).catch(reason => {
+                console.warn("Fetch by field from database failed", {
+                    tableName: tableName,
+                    fieldName: fieldName,
+                    searchFor: searchFor,
+                    reason: reason
+                });
+
+                return null;
+            });
         }
         else {
-            query.equalTo(fieldName as any, searchFor as any);
+            return result;
         }
-        if (conferenceId) {
-            query.equalTo("conference" as any, new Parse.Object("Conference", { id: conferenceId }) as any);
-        }
-
-        let itemP = query.first();
-        return itemP.then(async parse => {
-            if (parse) {
-                return StaticBaseImpl.wrapItem<K, T>(tableName, parse);
-            }
-            return null;
-        }).catch(reason => {
-            console.warn("Fetch by field from database failed", {
-                tableName: tableName,
-                fieldName: fieldName,
-                searchFor: searchFor,
-                reason: reason
-            });
-
-            return null;
-        });
     }
 
     static async getAll<K extends WholeSchemaKeys, T extends IBase<K>>(
@@ -234,45 +244,55 @@ export abstract class StaticBaseImpl {
         searchFor: LocalDataT[K][S],
         conferenceId?: string
     ): Promise<Array<T>> {
-        // TODO: Can we put this through the cache?
-        // Only if we can define relevant indexes on the cache (within indexeddb)
-        let query = new Parse.Query<Parse.Object<PromisesRemapped<WholeSchema[K]["value"]>>>(tableName);
-        if (fieldName in RelationsToTableNames[tableName]) {
-            if (searchFor instanceof Array) {
-                // TODO: Test this - really, test this, and if it doesn't work - fix it in getByField too
+        let results: Array<T> = [];
+        if (StaticBaseImpl.IsCachable(tableName, conferenceId)) {
+            const _tableName = tableName as CachedSchemaKeys;
+            const cache = await Caches.get(conferenceId);
+            results = await cache.getAllByField(_tableName, fieldName as any, searchFor) as unknown as T[];
+        }
 
-                let _searchFor: Array<string> = searchFor;
-                query.containedIn(fieldName as any, _searchFor.map(x => {
-                    return new Parse.Object(RelationsToTableNames[tableName][fieldName as any], {
-                        id: x
-                    }) as any;
-                }));
+        if (results.length === 0) {
+            let query = new Parse.Query<Parse.Object<PromisesRemapped<WholeSchema[K]["value"]>>>(tableName);
+            if (fieldName in RelationsToTableNames[tableName]) {
+                if (searchFor instanceof Array) {
+                    // TODO: Test this - really, test this, and if it doesn't work - fix it in getByField too
+
+                    let _searchFor: Array<string> = searchFor;
+                    query.containedIn(fieldName as any, _searchFor.map(x => {
+                        return new Parse.Object(RelationsToTableNames[tableName][fieldName as any], {
+                            id: x
+                        }) as any;
+                    }));
+                }
+                else {
+                    query.equalTo(fieldName as any, new Parse.Object(RelationsToTableNames[tableName][fieldName as any], {
+                        id: searchFor
+                    }) as any);
+                }
             }
             else {
-                query.equalTo(fieldName as any, new Parse.Object(RelationsToTableNames[tableName][fieldName as any], {
-                    id: searchFor
-                }) as any);
+                query.equalTo(fieldName as any, searchFor as any);
             }
+            if (conferenceId) {
+                query.equalTo("conference" as any, new Parse.Object("Conference", { id: conferenceId }) as any);
+            }
+
+            return await query.map(async parse => {
+                return StaticBaseImpl.wrapItem<K, T>(tableName, parse);
+            }).catch(reason => {
+                console.warn("Fetch by field from database failed", {
+                    tableName: tableName,
+                    fieldName: fieldName,
+                    searchFor: searchFor,
+                    reason: reason
+                });
+
+                return [];
+            });
         }
         else {
-            query.equalTo(fieldName as any, searchFor as any);
+            return results;
         }
-        if (conferenceId) {
-            query.equalTo("conference" as any, new Parse.Object("Conference", { id: conferenceId }) as any);
-        }
-
-        return await query.map(async parse => {
-            return StaticBaseImpl.wrapItem<K, T>(tableName, parse);
-        }).catch(reason => {
-            console.warn("Fetch by field from database failed", {
-                tableName: tableName,
-                fieldName: fieldName,
-                searchFor: searchFor,
-                reason: reason
-            });
-
-            return [];
-        });
     }
 
     static async onDataUpdated<K extends CachedSchemaKeys>(

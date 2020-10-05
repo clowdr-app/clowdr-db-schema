@@ -548,12 +548,18 @@ export default class Cache {
         }
 
         let itemsQ = await this.newParseQuery(tableName);
+        itemsQ = itemsQ.includeAll();
+
         if (fillFrom) {
             itemsQ.greaterThanOrEqualTo("updatedAt", fillFrom as any);
         }
 
-        let results = itemsQ.map(async parse => {
-            return this.addItemToCache<K, T>(parse, tableName, db);
+        let results: T[] = [];
+        await itemsQ.eachBatch(async parseObjs => {
+            const mapped = await Promise.all(parseObjs.map(parse => this.addItemToCache<K, T>(parse, tableName, db)));
+            results = results.concat(mapped);
+        }, {
+            batchSize: 1000
         });
 
         if (db && fillFrom) {

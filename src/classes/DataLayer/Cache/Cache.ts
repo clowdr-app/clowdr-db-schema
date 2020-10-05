@@ -1011,6 +1011,10 @@ export default class Cache {
         tableName: K,
         id: string
     ): Promise<T | null> {
+        if (!id) {
+            return null as any;
+        }
+
         try {
             return await this.getFromCache(tableName, id) as T;
         }

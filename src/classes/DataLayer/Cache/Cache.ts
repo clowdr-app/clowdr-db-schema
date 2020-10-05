@@ -1052,7 +1052,15 @@ export default class Cache {
             if (fieldName in RelationsToTableNames[tableName]) {
                 if (searchFor instanceof Array) {
                     let _searchFor: Array<any> = searchFor;
-                    if (_searchFor.includes(current[fieldName as any])) {
+                    function match(v: any) {
+                        if (current[fieldName as any] instanceof Array) {
+                            return current[fieldName as any].includes(v);
+                        }
+                        else {
+                            return v === current[fieldName as any];
+                        }
+                    }
+                    if (_searchFor.some(match)) {
                         return true;
                     }
                 }
@@ -1096,7 +1104,15 @@ export default class Cache {
             if (fieldName in RelationsToTableNames[tableName]) {
                 if (searchFor instanceof Array) {
                     let _searchFor: Array<any> = searchFor;
-                    if (_searchFor.includes(current[fieldName as any])) {
+                    function match(v: any) {
+                        if (current[fieldName as any] instanceof Array) {
+                            return current[fieldName as any].includes(v);
+                        }
+                        else {
+                            return v === current[fieldName as any];
+                        }
+                    }
+                    if (_searchFor.some(match)) {
                         return true;
                     }
                 }

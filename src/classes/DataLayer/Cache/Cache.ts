@@ -597,7 +597,30 @@ export default class Cache {
                         // Avoid attempting to fetch data that we aren't allowed to access
                         else if (this.IsUserAuthenticated) {
                             let r = parse.relation(key as any);
-                            schema[key] = await r.query().map(x => x.id);
+                            // TODO: Relations are a major headache - they trigger a request against the
+                            //       database every time we have to fetch one.
+                            //       This means when the program updates, hundreds of thousands of requests
+                            //       will suddenly hit Back4App - our limit is 4,800 per minute!
+                            //       MongoDB isn't supposed to be used relationally - yet here we are.
+                            //       It's complete c**p.
+                            //       The only solution right now is to rate-limit every client on this type
+                            //       of request. We HAVE to cache these or the problem will be even worse.
+                            // The most painful thing is we only have one critical relation: ProgramPerson <-> ProgramItem
+                            schema[key] = await new Promise((resolve, reject) => {
+                                try {
+                                    setTimeout(async () => {
+                                        try {
+                                            resolve(r.query().map(x => x.id));
+                                        }
+                                        catch (e) {
+                                            reject(e);
+                                        }
+                                    }, 5000);
+                                }
+                                catch (e) {
+                                    reject(e);
+                                }
+                            });
                         }
                     }
                     catch (e) {

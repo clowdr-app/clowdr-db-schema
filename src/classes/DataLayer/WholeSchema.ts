@@ -60,7 +60,6 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     },
     ProgramItem: {
         conference: "Conference",
-        authors: "ProgramPerson",
         track: "ProgramTrack",
         feed: "ContentFeed",
     },

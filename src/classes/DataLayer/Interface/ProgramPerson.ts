@@ -20,8 +20,9 @@ export default class Class extends CachedBase<K> implements SchemaT {
     }
 
     get items(): Promise<ProgramItem[]> {
-        // TODO: Test this - really, test this
-        return StaticBaseImpl.getAllByField("ProgramItem", "authors", [this.id], this.conferenceId);
+        return StaticBaseImpl.getAll<"ProgramItem", ProgramItem>("ProgramItem", this.conferenceId).then(xs => {
+            return xs.filter(x => x.authors.includes(this.id));
+        });
     }
 
     get conference(): Promise<Conference> {

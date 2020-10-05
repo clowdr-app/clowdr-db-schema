@@ -31,8 +31,20 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.title;
     }
 
-    get authors(): Promise<Array<ProgramPerson>> {
-        return this.nonUniqueRelated("authors");
+    get authors(): Array<string> {
+        return this.data.authors ?? [];
+    }
+    
+    get authorPerons(): Promise<Array<ProgramPerson>> {
+        return this.data.authors
+            ? Promise.all(this.data.authors.map(async x => {
+                const p = await ProgramPerson.get(x, this.conferenceId);
+                if (!p) {
+                    throw new Error(`Could not get program person ${x}`);
+                }
+                return p;
+            }))
+            : Promise.resolve([]);
     }
 
     get conference(): Promise<Conference> {

@@ -605,7 +605,6 @@ export default class Cache {
                             //       It's complete c**p.
                             //       The only solution right now is to rate-limit every client on this type
                             //       of request. We HAVE to cache these or the problem will be even worse.
-                            // The most painful thing is we only have one critical relation: ProgramPerson <-> ProgramItem
                             schema[key] = await new Promise((resolve, reject) => {
                                 try {
                                     setTimeout(async () => {
@@ -1120,7 +1119,7 @@ export default class Cache {
     >(
         tableName: K,
         fieldName: S,
-        searchFor: LocalDataT[K][S],
+        searchFor: LocalDataT[K][S]
     ): Promise<Array<T>> {
         // We should do this by defining indexes (within indexeddb) ideally...
         function filterF(current: ExtendedCachedSchema[K]["value"]) {

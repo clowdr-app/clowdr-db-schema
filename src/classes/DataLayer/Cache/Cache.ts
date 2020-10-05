@@ -434,7 +434,7 @@ export default class Cache {
                     try {
                         let localRefillTimes = await this.getLocalRefillTimes(db);
                         const now = Date.now();
-                    
+
                         await Promise.all(CachedStoreNames.map(async store => {
                             try {
                                 await this.subscribeToUpdates(store);
@@ -442,7 +442,7 @@ export default class Cache {
                                 let localRefillTime = localRefillTimes[store] ?? new Date(0);
                                 let isProgramTable = this.ProgramTableNames.includes(store);
                                 let shouldUpdate =
-                                        isProgramTable
+                                    isProgramTable
                                         ? remoteLastProgramUpdateTime.getTime() > localRefillTime.getTime() - 3600
                                         : localRefillTime.getTime() + this.cacheInactiveTime < now;
 
@@ -775,7 +775,7 @@ export default class Cache {
         t.db.createObjectStore<K>(name, {
             keyPath: this.KEY_PATH
         });
-        
+
         // TODO: For 'find' (getByField / getAllByField) we will need to create indexes
     }
 
@@ -1037,7 +1037,7 @@ export default class Cache {
             }
         }
     }
-    
+
     async getByField<
         K extends CachedSchemaKeys,
         S extends KnownKeys<LocalDataT[K]>,
@@ -1079,20 +1079,7 @@ export default class Cache {
     async getAll<K extends CachedSchemaKeys, T extends CachedBase<K>>(
         tableName: K
     ): Promise<Array<T>> {
-        return this.getAllFromCache(tableName).catch(async () => {
-            let query = await this.newParseQuery(tableName);
-            return query.map(async parse => {
-                return await this.addItemToCache<K, T>(parse, tableName);
-            }).catch(reason => {
-                this.logger.warn("Fetch from database of all cached items failed", {
-                    conferenceId: this.conferenceId,
-                    tableName: tableName,
-                    reason: reason
-                });
-
-                return [];
-            });
-        }) as Promise<Array<T>>;
+        return this.getAllFromCache(tableName);
     }
 
     async getAllByField<

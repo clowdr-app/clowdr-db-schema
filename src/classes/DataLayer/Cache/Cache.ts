@@ -235,6 +235,8 @@ export default class Cache {
 
     private logger: DebugLogger = new DebugLogger("Cache");
     private readonly cacheStaleTime = 1000 * 60 * 60 * 24; // 24 hours
+    private readonly cacheInactiveTime = 1000 * 60 * 60; // 60 minutes
+    private readonly liveQueryTrustedTime = 1000 * 60 * 5; // 5 minutes
 
     private static parseLive: Parse.LiveQueryClient | null = null;
     private liveQuerySubscriptions: {
@@ -450,21 +452,25 @@ export default class Cache {
                                 let isProgramTable = this.ProgramTableNames.includes(store);
                                 let shouldUpdate =
                                     isProgramTable
-                                        ? remoteLastProgramUpdateTime.getTime() > localRefillTime.getTime() - 3600
-                                        : true;
+                                        ? remoteLastProgramUpdateTime.getTime() > localRefillTime.getTime() - 10000
+                                        : localRefillTime.getTime() + this.cacheInactiveTime < now;
 
                                 if (shouldUpdate) {
-                                    let shouldClear = isProgramTable || localRefillTime.getTime() + this.cacheStaleTime < now;
+                                    let shouldClear = localRefillTime.getTime() + this.cacheStaleTime < now;
                                     let fillFrom = localRefillTimes[store];
                                     if (shouldClear) {
                                         await db.clear(store);
                                         fillFrom = new Date(0);
                                     }
 
+                                    db.put("LocalRefillTimes", { id: store, lastRefillAt: new Date(now) });
+
                                     return this.fillCache(store, db, fillFrom);
                                 }
-
-                                db.put("LocalRefillTimes", { id: store, lastRefillAt: new Date(now) });
+                                
+                                if (shouldUpdate || localRefillTime.getTime() + this.liveQueryTrustedTime > now) {
+                                    db.put("LocalRefillTimes", { id: store, lastRefillAt: new Date(now) });
+                                }
                             }
                             catch (e) {
                                 this.logger.error(`Could not update cache table ${store} for conference ${this.conferenceId}`, e);

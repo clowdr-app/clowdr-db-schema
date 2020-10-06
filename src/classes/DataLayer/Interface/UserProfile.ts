@@ -124,10 +124,8 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.primaryFlair;
     }
 
-    set primaryFlair(value) {
-        value.then(x => {
-            this.data.primaryFlair = x?.id;
-        });
+    set primaryFlairId(value) {
+        this.data.primaryFlair = value;
     }
 
     get programPersons(): Promise<ProgramPerson[]> {
@@ -152,12 +150,6 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get flairObjects(): Promise<Flair[]> {
         return Promise.all(this.data.flairs.map(x => Flair.get(x, this.conferenceId))).then(xs => removeNull(xs));
-    }
-
-    set flairObjects(value) {
-        value.then(xs => {
-            this.data.flairs = xs.map(x => x.id);
-        });
     }
 
     static getByUserId(userId: string, conferenceId: string): Promise<Class | null> {

@@ -409,11 +409,19 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
                     }
                 }
                 else {
+                    // Is it a Parse.File...
                     if (this.data[key] && typeof this.data[key] === "object" && "_name" in this.data[key] && "_url" in this.data[key]) {
-                        this.data[key] = new Parse.File(this.data[key]["_name"], { uri: this.data[key]["_url"] }) as any;
+                        // If so, the `parse` object will already contain a "proper" instance of Parse.File
+                        // that we should only overwrite with a newer "proper" instance
+                        // So...is this a proper instance? If the data came from the cache, _source will be `undefined`
+                        // but if it's a proper new Parse.File, _source will exist.
+                        if ("_source" in this.data[key] && this.data[key]["_source"]) {
+                            this.parse.set(key as any, this.data[key]);
+                        }
                     }
-
-                    this.parse.set(key as any, this.data[key]);
+                    else {
+                        this.parse.set(key as any, this.data[key]);
+                    }
                 }
             }
         }

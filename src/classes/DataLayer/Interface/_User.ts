@@ -30,6 +30,10 @@ export default class Class extends UncachedBase<K> implements SchemaT {
         return this.parse.get("passwordSet");
     }
 
+    get passwordResetToken(): string | undefined {
+        return this.parse.get("passwordResetToken");
+    }
+
     get username(): string {
         return this.parse.get("username");
     }

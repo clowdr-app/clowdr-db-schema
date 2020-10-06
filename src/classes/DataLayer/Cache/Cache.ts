@@ -1011,7 +1011,11 @@ export default class Cache {
             });
 
             if (this.isUserAuthenticated) {
-                return this.fillCache(tableName);
+                let results = await this.fillCache(tableName) as any[];
+                if (filterF) {
+                    results = results.filter(filterF);
+                }
+                return results;
             }
             else {
                 return [];

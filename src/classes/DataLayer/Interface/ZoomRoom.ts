@@ -1,19 +1,22 @@
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
-import { StaticUncachedBase, StaticBaseImpl, UncachedBase } from "./Base";
+import { StaticCachedBase, StaticBaseImpl, CachedBase, LocalDataT } from "./Base";
 import { Conference } from ".";
 
 type SchemaT = Schema.ZoomRoom;
 type K = "ZoomRoom";
 const K_str: K = "ZoomRoom";
 
-export default class Class extends UncachedBase<K> implements SchemaT {
-    constructor(parse: Parse.Object<PromisesRemapped<SchemaT>>) {
-        super(K_str, parse);
+export default class Class extends CachedBase<K> implements SchemaT {
+    constructor(
+        conferenceId: string,
+        data: LocalDataT[K],
+        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null) {
+        super(conferenceId, K_str, data, parse);
     }
 
     get url(): string {
-        return this.parse.get("url");
+        return this.data.url;
     }
 
     get conference(): Promise<Conference> {
@@ -27,8 +30,16 @@ export default class Class extends UncachedBase<K> implements SchemaT {
     static getAll(conferenceId?: string): Promise<Array<Class>> {
         return StaticBaseImpl.getAll(K_str, conferenceId);
     }
+
+    static onDataUpdated(conferenceId: string) {
+        return StaticBaseImpl.onDataUpdated(K_str, conferenceId);
+    }
+
+    static onDataDeleted(conferenceId: string) {
+        return StaticBaseImpl.onDataDeleted(K_str, conferenceId);
+    }
 }
 
 // The line of code below triggers type-checking of Class for static members
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _: StaticUncachedBase<K> = Class;
+const _: StaticCachedBase<K> = Class;

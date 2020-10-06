@@ -162,7 +162,8 @@ export abstract class StaticBaseImpl {
         tableName: K,
         fieldName: S,
         searchFor: LocalDataT[K][S],
-        conferenceId?: string
+        conferenceId?: string,
+        trustCache: boolean = true
     ): Promise<T | null> {
         let result: T | null = null;
         if (StaticBaseImpl.IsCachable(tableName, conferenceId)) {
@@ -170,8 +171,11 @@ export abstract class StaticBaseImpl {
             const cache = await Caches.get(conferenceId);
             result = await cache.getByField(_tableName, fieldName as any, searchFor) as unknown as T;
         }
+        else {
+            trustCache = false;
+        }
 
-        if (!result) {
+        if (!result && !trustCache) {
             let query = new Parse.Query<Parse.Object<PromisesRemapped<WholeSchema[K]["value"]>>>(tableName);
             if (fieldName in RelationsToTableNames[tableName]) {
                 if (searchFor instanceof Array) {
@@ -242,7 +246,8 @@ export abstract class StaticBaseImpl {
         tableName: K,
         fieldName: S,
         searchFor: LocalDataT[K][S],
-        conferenceId?: string
+        conferenceId?: string,
+        trustCache: boolean = true
     ): Promise<Array<T>> {
         let results: Array<T> = [];
         if (StaticBaseImpl.IsCachable(tableName, conferenceId)) {
@@ -250,8 +255,11 @@ export abstract class StaticBaseImpl {
             const cache = await Caches.get(conferenceId);
             results = await cache.getAllByField(_tableName, fieldName as any, searchFor) as unknown as T[];
         }
+        else {
+            trustCache = false;
+        }
 
-        if (results.length === 0) {
+        if (results.length === 0 && !trustCache) {
             let query = new Parse.Query<Parse.Object<PromisesRemapped<WholeSchema[K]["value"]>>>(tableName);
             if (fieldName in RelationsToTableNames[tableName]) {
                 if (searchFor instanceof Array) {
@@ -433,9 +441,6 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
         let targetIds = this.data[field as unknown as keyof LocalDataT[K]] as any as Array<string>;
         if (CachedStoreNames.includes(targetTableName as any)) {
             return Promise.all(targetIds.map(targetId => cache.get(targetTableName as any, targetId).then(result => {
-                if (!result) {
-                    return Promise.reject("Target of non-uniquely related field not found!");
-                }
                 return result;
             }))) as unknown as RelatedDataT[K][S];
         }

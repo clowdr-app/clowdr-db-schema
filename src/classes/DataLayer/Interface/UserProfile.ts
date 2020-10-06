@@ -148,7 +148,7 @@ export default class Class extends CachedBase<K> implements SchemaT {
     }
 
     static getByUserId(userId: string, conferenceId: string): Promise<Class | null> {
-        return StaticBaseImpl.getByField("UserProfile", "user", userId, conferenceId);
+        return StaticBaseImpl.getByField("UserProfile", "user", userId, conferenceId, false);
     }
 
     static get(id: string, conferenceId: string): Promise<Class | null> {

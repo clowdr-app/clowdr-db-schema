@@ -66,6 +66,8 @@ export default class Cache {
             Conference: keys<Schema.Conference>(),
             PrivilegedConferenceDetails: keys<Schema.PrivilegedConferenceDetails>(),
             YouTubeFeed: keys<Schema.YouTubeFeed>(),
+            ZoomRoom: keys<Schema.ZoomRoom>(),
+            ConferenceConfiguration: keys<Schema.ConferenceConfiguration>()
         };
 
     readonly Relations: {
@@ -87,6 +89,8 @@ export default class Cache {
             Conference: keys<PromisedFields<Schema.Conference>>(),
             PrivilegedConferenceDetails: keys<PromisedFields<Schema.PrivilegedConferenceDetails>>(),
             YouTubeFeed: keys<PromisedFields<Schema.YouTubeFeed>>(),
+            ZoomRoom: keys<PromisedFields<Schema.ZoomRoom>>(),
+            ConferenceConfiguration: keys<PromisedFields<Schema.ConferenceConfiguration>>()
         };
 
     readonly UniqueRelations: {
@@ -108,6 +112,8 @@ export default class Cache {
             Conference: keys<PromisedNonArrayFields<Schema.Conference>>(),
             PrivilegedConferenceDetails: keys<PromisedNonArrayFields<Schema.PrivilegedConferenceDetails>>(),
             YouTubeFeed: keys<PromisedNonArrayFields<Schema.YouTubeFeed>>(),
+            ZoomRoom: keys<PromisedNonArrayFields<Schema.ZoomRoom>>(),
+            ConferenceConfiguration: keys<PromisedNonArrayFields<Schema.ConferenceConfiguration>>()
         };
 
     readonly NonUniqueRelations: {
@@ -129,6 +135,8 @@ export default class Cache {
             Conference: keys<PromisedArrayFields<Schema.Conference>>(),
             PrivilegedConferenceDetails: keys<PromisedArrayFields<Schema.PrivilegedConferenceDetails>>(),
             YouTubeFeed: keys<PromisedArrayFields<Schema.YouTubeFeed>>(),
+            ZoomRoom: keys<PromisedArrayFields<Schema.ZoomRoom>>(),
+            ConferenceConfiguration: keys<PromisedArrayFields<Schema.ConferenceConfiguration>>()
         };
 
     readonly KEY_PATH: "id" = "id";

@@ -4,11 +4,6 @@ import * as Schema from "./Schema";
 import { Indexes } from './CachedSchema';
 
 export default interface UncachedSchema extends IDB.DBSchema {
-    ConferenceConfiguration: {
-        key: string;
-        value: Schema.ConferenceConfiguration;
-        indexes: Indexes<Schema.ConferenceConfiguration>;
-    };
     Registration: {
         key: string;
         value: Schema.Registration;
@@ -23,10 +18,5 @@ export default interface UncachedSchema extends IDB.DBSchema {
         key: string;
         value: Schema._User;
         indexes: Indexes<Schema._User>;
-    };
-    ZoomRoom: {
-        key: string;
-        value: Schema.ZoomRoom;
-        indexes: Indexes<Schema.ZoomRoom>;
     };
 }

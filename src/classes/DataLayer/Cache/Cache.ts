@@ -109,6 +109,8 @@ export default class Cache {
                 Conference: keys<Schema.Conference>(),
                 PrivilegedConferenceDetails: keys<Schema.PrivilegedConferenceDetails>(),
                 YouTubeFeed: keys<Schema.YouTubeFeed>(),
+                ZoomRoom: keys<Schema.ZoomRoom>(),
+                ConferenceConfiguration: keys<Schema.ConferenceConfiguration>()
             };
         }
         return Cache.fields;
@@ -141,6 +143,8 @@ export default class Cache {
                 Conference: keys<PromisedFields<Schema.Conference>>(),
                 PrivilegedConferenceDetails: keys<PromisedFields<Schema.PrivilegedConferenceDetails>>(),
                 YouTubeFeed: keys<PromisedFields<Schema.YouTubeFeed>>(),
+                ZoomRoom: keys<PromisedFields<Schema.ZoomRoom>>(),
+                ConferenceConfiguration: keys<PromisedFields<Schema.ConferenceConfiguration>>()
             };
         }
         return Cache.relations;
@@ -173,6 +177,8 @@ export default class Cache {
                 Conference: keys<PromisedNonArrayFields<Schema.Conference>>(),
                 PrivilegedConferenceDetails: keys<PromisedNonArrayFields<Schema.PrivilegedConferenceDetails>>(),
                 YouTubeFeed: keys<PromisedNonArrayFields<Schema.YouTubeFeed>>(),
+                ZoomRoom: keys<PromisedNonArrayFields<Schema.ZoomRoom>>(),
+                ConferenceConfiguration: keys<PromisedNonArrayFields<Schema.ConferenceConfiguration>>()
             };
         }
         return Cache.uniqueRelations;
@@ -200,6 +206,8 @@ export default class Cache {
             Conference: keys<PromisedArrayFields<Schema.Conference>>(),
             PrivilegedConferenceDetails: keys<PromisedArrayFields<Schema.PrivilegedConferenceDetails>>(),
             YouTubeFeed: keys<PromisedArrayFields<Schema.YouTubeFeed>>(),
+            ZoomRoom: keys<PromisedArrayFields<Schema.ZoomRoom>>(),
+            ConferenceConfiguration: keys<PromisedArrayFields<Schema.ConferenceConfiguration>>()
         };
 
     // If changing this list, remember to update the `afterSave` callbacks in
@@ -226,8 +234,7 @@ export default class Cache {
     private isRefreshRunning: boolean = false;
 
     private logger: DebugLogger = new DebugLogger("Cache");
-    private readonly cacheStaleTime = 1000 * 60 * 5; // 5 minutes
-    private readonly cacheInactiveTime = 1000 * 60 * 1; // 1 minutes
+    private readonly cacheStaleTime = 1000 * 60 * 60 * 24; // 24 hours
 
     private static parseLive: Parse.LiveQueryClient | null = null;
     private liveQuerySubscriptions: {
@@ -444,7 +451,7 @@ export default class Cache {
                                 let shouldUpdate =
                                     isProgramTable
                                         ? remoteLastProgramUpdateTime.getTime() > localRefillTime.getTime() - 3600
-                                        : localRefillTime.getTime() + this.cacheInactiveTime < now;
+                                        : true;
 
                                 if (shouldUpdate) {
                                     let shouldClear = isProgramTable || localRefillTime.getTime() + this.cacheStaleTime < now;
@@ -553,7 +560,6 @@ export default class Cache {
                     }
 
                     let itemsQ = await this.newParseQuery(tableName);
-                    itemsQ = itemsQ.includeAll();
 
                     if (fillFrom) {
                         itemsQ.greaterThanOrEqualTo("updatedAt", fillFrom as any);
@@ -612,29 +618,13 @@ export default class Cache {
                         // Avoid attempting to fetch data that we aren't allowed to access
                         else if (this.IsUserAuthenticated) {
                             let r = parse.relation(key as any);
-                            // TODO: Relations are a major headache - they trigger a request against the
-                            //       database every time we have to fetch one.
-                            //       This means when the program updates, hundreds of thousands of requests
-                            //       will suddenly hit Back4App - our limit is 4,800 per minute!
-                            //       MongoDB isn't supposed to be used relationally - yet here we are.
-                            //       It's complete c**p.
-                            //       The only solution right now is to rate-limit every client on this type
-                            //       of request. We HAVE to cache these or the problem will be even worse.
-                            schema[key] = await new Promise((resolve, reject) => {
-                                try {
-                                    setTimeout(async () => {
-                                        try {
-                                            resolve(r.query().map(x => x.id));
-                                        }
-                                        catch (e) {
-                                            reject(e);
-                                        }
-                                    }, 5000);
-                                }
-                                catch (e) {
-                                    reject(e);
-                                }
+                            let related: string[] = [];
+                            await r.query().eachBatch(x => {
+                                related = related.concat(x.map(x => x.id));
+                            }, {
+                                batchSize: 1000
                             });
+                            schema[key] = related;
                         }
                     }
                     catch (e) {
@@ -1035,6 +1025,7 @@ export default class Cache {
         let conf = await this.conference;
 
         let query = new Parse.Query<Parse.Object<PromisesRemapped<CachedSchema[K]["value"]>>>(tableName);
+        query.includeAll();
         if (tableName !== "Conference") {
             let r2t: Record<string, string> = RelationsToTableNames[tableName];
             if ("conference" in r2t) {
@@ -1086,6 +1077,10 @@ export default class Cache {
     ): Promise<T | null> {
         // We should do this by defining indexes (within indexeddb) ideally...
         function filterF(current: ExtendedCachedSchema[K]["value"]) {
+            if (!(fieldName in current)) {
+                return false;
+            }
+
             if (fieldName in RelationsToTableNames[tableName]) {
                 if (searchFor instanceof Array) {
                     let _searchFor: Array<any> = searchFor;
@@ -1138,6 +1133,10 @@ export default class Cache {
     ): Promise<Array<T>> {
         // We should do this by defining indexes (within indexeddb) ideally...
         function filterF(current: ExtendedCachedSchema[K]["value"]) {
+            if (!(fieldName in current)) {
+                return false;
+            }
+
             if (fieldName in RelationsToTableNames[tableName]) {
                 if (searchFor instanceof Array) {
                     let _searchFor: Array<any> = searchFor;

@@ -13,7 +13,7 @@ export type Indexes<T> = { [K in PromisedKeys<T>]: "id" };
 //            be increased.
 
 // Decimal places are not allowed - only positive integers!
-export const SchemaVersion: number = 2;
+export const SchemaVersion: number = 3;
 
 export interface CachableDBSchema extends IDB.DBSchema {
     [s: string]: DBSchemaValue;
@@ -37,6 +37,16 @@ export default interface CachedSchema extends CachableDBSchema {
         key: string;
         value: Schema.Conference;
         indexes: Indexes<Schema.Conference>;
+    };
+    ConferenceConfiguration: {
+        key: string;
+        value: Schema.ConferenceConfiguration;
+        indexes: Indexes<Schema.ConferenceConfiguration>;
+    };
+    ContentFeed: {
+        key: string;
+        value: Schema.ContentFeed;
+        indexes: Indexes<Schema.ContentFeed>;
     };
     Flair: {
         key: string;
@@ -62,11 +72,6 @@ export default interface CachedSchema extends CachableDBSchema {
         key: string;
         value: Schema.ProgramItemAttachment;
         indexes: Indexes<Schema.ProgramItemAttachment>;
-    };
-    ContentFeed: {
-        key: string;
-        value: Schema.ContentFeed;
-        indexes: Indexes<Schema.ContentFeed>;
     };
     ProgramSession: {
         key: string;
@@ -108,4 +113,9 @@ export default interface CachedSchema extends CachableDBSchema {
         value: Schema.YouTubeFeed;
         indexes: Indexes<Schema.YouTubeFeed>;
     }
+    ZoomRoom: {
+        key: string;
+        value: Schema.ZoomRoom;
+        indexes: Indexes<Schema.ZoomRoom>;
+    };
 }

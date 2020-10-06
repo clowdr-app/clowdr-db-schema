@@ -385,7 +385,12 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
                     let uniqRels = Cache.UniqueRelations[this.tableName] as Array<string>;
                     if (uniqRels.includes(key as string)) {
                         let targetId = this.data[key] as unknown as string;
-                        this.parse.set(key as any, new Parse.Object(RelationsToTableNames[this.tableName][key as any], { id: targetId }) as any);
+                        if (targetId) {
+                            this.parse.set(key as any, new Parse.Object(RelationsToTableNames[this.tableName][key as any], { id: targetId }) as any);
+                        }
+                        else {
+                            this.parse.set(key as any, undefined);
+                        }
                     }
                     else {
                         let r = this.parse.relation(key as any);
@@ -396,7 +401,9 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
                         let ids = this.data[key] as string[];
                         if (ids) {
                             for (let targetId of ids) {
-                                r.add(new Parse.Object(RelationsToTableNames[this.tableName][key as any], { id: targetId }));
+                                if (targetId) {
+                                    r.add(new Parse.Object(RelationsToTableNames[this.tableName][key as any], { id: targetId }));
+                                }
                             }
                         }
                     }

@@ -879,7 +879,7 @@ export default class Cache {
             if (CachedStoreNames.includes(storeName as CachedSchemaKeys)) {
                 toUpgrade.push(storeName as CachedSchemaKeys);
             }
-            else {
+            else if (storeName !== "LocalRefillTimes") {
                 toDelete.push(storeName);
             }
         }

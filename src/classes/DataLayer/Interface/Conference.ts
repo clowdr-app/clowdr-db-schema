@@ -36,7 +36,7 @@ export default class Class extends CachedBase<K> implements SchemaT {
     }
 
     get details(): Promise<Array<PrivilegedConferenceDetails>> {
-        return StaticBaseImpl.getAllByField("PrivilegedConferenceDetails", "conference", this.id);
+        return StaticBaseImpl.getAllByField("PrivilegedConferenceDetails", "conference", this.id, this.id);
     }
 
     get autoWatchTextChats(): Promise<Array<TextChat>> {

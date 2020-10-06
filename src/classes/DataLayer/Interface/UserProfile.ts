@@ -2,6 +2,7 @@ import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
 import { Conference, Flair, ProgramPerson, _User } from ".";
+import { removeNull } from "../../Util";
 
 type SchemaT = Schema.UserProfile;
 type K = "UserProfile";
@@ -115,13 +116,17 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.uniqueRelated("conference");
     }
 
-    get primaryFlair(): Promise<Flair> {
+    get primaryFlair(): Promise<Flair | undefined> {
         return this.uniqueRelated("primaryFlair");
+    }
+    
+    get primaryFlairId(): string | undefined {
+        return this.data.primaryFlair;
     }
 
     set primaryFlair(value) {
         value.then(x => {
-            this.data.primaryFlair = x.id;
+            this.data.primaryFlair = x?.id;
         });
     }
 
@@ -137,11 +142,19 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.user;
     }
 
-    get flairs(): Promise<Flair[]> {
-        return this.nonUniqueRelated("flairs");
+    get flairs(): string[] {
+        return this.data.flairs;
     }
 
     set flairs(value) {
+        this.data.flairs = value;
+    }
+
+    get flairObjects(): Promise<Flair[]> {
+        return Promise.all(this.data.flairs.map(x => Flair.get(x, this.conferenceId))).then(xs => removeNull(xs));
+    }
+
+    set flairObjects(value) {
         value.then(xs => {
             this.data.flairs = xs.map(x => x.id);
         });

@@ -33,7 +33,7 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.uniqueRelated("profile").catch(() => undefined);
     }
 
-    get profileId(): string {
+    get profileId(): string | undefined {
         return this.data.profile;
     }
 

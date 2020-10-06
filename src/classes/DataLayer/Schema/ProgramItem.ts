@@ -1,5 +1,5 @@
 import { Base } from ".";
-import { Conference, ContentFeed, ProgramTrack, ProgramPerson } from "../Interface";
+import { Conference, ContentFeed, ProgramTrack } from "../Interface";
 import Parse from "parse";
 
 export default interface Schema extends Base {

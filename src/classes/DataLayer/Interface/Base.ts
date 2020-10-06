@@ -40,8 +40,9 @@ export type LocalDataT
     = {
         [K in CachedSchemaKeys]: {
             [K2 in KnownKeys<CachedSchema[K]["value"]>]:
-            CachedSchema[K]["value"][K2] extends Promise<Array<any>> ? Array<string> :
-            CachedSchema[K]["value"][K2] extends Promise<any> ? string :
+            CachedSchema[K]["value"][K2] extends Promise<Array<IBase<infer Z>>> ? Array<string> :
+            CachedSchema[K]["value"][K2] extends Promise<IBase<infer Z>> ? string :
+            CachedSchema[K]["value"][K2] extends Promise<IBase<infer Z> | undefined> ? string | undefined :
             CachedSchema[K]["value"][K2]
         } & {
             [K in KnownKeys<Schema.Base>]: Schema.Base[K]
@@ -49,8 +50,9 @@ export type LocalDataT
     } & {
         [K in UncachedSchemaKeys]: {
             [K2 in KnownKeys<UncachedSchema[K]["value"]>]:
-            UncachedSchema[K]["value"][K2] extends Promise<Array<any>> ? Array<string> :
-            UncachedSchema[K]["value"][K2] extends Promise<any> ? string :
+            UncachedSchema[K]["value"][K2] extends Promise<Array<IBase<infer Z>>> ? Array<string> :
+            UncachedSchema[K]["value"][K2] extends Promise<IBase<infer Z>> ? string :
+            UncachedSchema[K]["value"][K2] extends Promise<IBase<infer Z> | undefined> ? string | undefined :
             UncachedSchema[K]["value"][K2]
         } & {
             [K in KnownKeys<Schema.Base>]: Schema.Base[K]

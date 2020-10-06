@@ -16,16 +16,16 @@ export default interface Schema extends Base {
     country: string | undefined;
     dataConsentGiven: boolean;
     displayName: string;
+    flairs: Array<string>;
     position: string | undefined;
     profilePhoto: Parse.File | undefined;
-    pronouns: Array<any>;
+    pronouns: Array<string>;
     realName: string;
     tags: Array<UserProfileTag>;
     webpage: string | undefined;
     welcomeModalShown: boolean;
 
     conference: Promise<Conference>;
-    flairs: Promise<Array<Flair>>;
-    primaryFlair: Promise<Flair>;
+    primaryFlair: Promise<Flair | undefined>;
     user: Promise<_User>;
 }

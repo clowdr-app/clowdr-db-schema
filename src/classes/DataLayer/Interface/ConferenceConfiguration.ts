@@ -19,8 +19,16 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.key;
     }
 
+    set key(value) {
+        this.data.key = value;
+    }
+
     get value(): string {
         return this.data.value;
+    }
+
+    set value(value) {
+        this.data.value = value;
     }
 
     get conference(): Promise<Conference> {

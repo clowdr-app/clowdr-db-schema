@@ -19,6 +19,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.key;
     }
 
+    set key(value) {
+        this.data.key = value;
+    }
+
     get value(): string {
         return this.data.value;
     }
@@ -27,6 +31,9 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.uniqueRelated("conference");
     }
 
+    set value(value) {
+        this.data.value = value;
+    }
 
     static get(id: string): Promise<Class | null> {
         return StaticBaseImpl.get(K_str, id);

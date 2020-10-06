@@ -19,16 +19,32 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.headerImage;
     }
 
+    set headerImage(value) {
+        this.data.headerImage = value;
+    }
+
     get welcomeText(): string {
         return this.data.welcomeText;
+    }
+
+    set welcomeText(value) {
+        this.data.welcomeText = value;
     }
 
     get name(): string {
         return this.data.name;
     }
 
+    set name(value) {
+        this.data.name = value;
+    }
+
     get shortName(): string {
         return this.data.shortName;
+    }
+
+    set shortName(value) {
+        this.data.shortName = value;
     }
 
     get lastProgramUpdateTime(): Date {

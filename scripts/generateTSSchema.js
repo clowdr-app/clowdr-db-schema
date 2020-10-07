@@ -58,7 +58,7 @@ function determineFieldType(schema, fieldName) {
             tsType = "Date";
         }
         else if (tsType === "array") {
-            tsType = "Array<any>";
+            tsType = "Array<string>";
         }
         else if (tsType === "object") {
             tsType = "object";

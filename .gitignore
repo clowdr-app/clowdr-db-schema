@@ -12,3 +12,5 @@ sample-program-data.js
 *.csv
 
 /build
+db/schema-base/fs.files.metadata.json
+db/schema-base/fs.chunks.metadata.json

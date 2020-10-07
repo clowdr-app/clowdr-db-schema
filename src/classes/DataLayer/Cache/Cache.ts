@@ -77,7 +77,8 @@ export default class Cache {
                 _User: Interface._User,
                 UserProfile: Interface.UserProfile,
                 YouTubeFeed: Interface.YouTubeFeed,
-                ZoomRoom: Interface.ZoomRoom
+                ZoomRoom: Interface.ZoomRoom,
+                WatchedItems: Interface.WatchedItems
             };
         }
         return Cache.constructors;
@@ -110,7 +111,8 @@ export default class Cache {
                 PrivilegedConferenceDetails: keys<Schema.PrivilegedConferenceDetails>(),
                 YouTubeFeed: keys<Schema.YouTubeFeed>(),
                 ZoomRoom: keys<Schema.ZoomRoom>(),
-                ConferenceConfiguration: keys<Schema.ConferenceConfiguration>()
+                ConferenceConfiguration: keys<Schema.ConferenceConfiguration>(),
+                WatchedItems: keys<Schema.WatchedItems>()
             };
         }
         return Cache.fields;
@@ -144,7 +146,8 @@ export default class Cache {
                 PrivilegedConferenceDetails: keys<PromisedFields<Schema.PrivilegedConferenceDetails>>(),
                 YouTubeFeed: keys<PromisedFields<Schema.YouTubeFeed>>(),
                 ZoomRoom: keys<PromisedFields<Schema.ZoomRoom>>(),
-                ConferenceConfiguration: keys<PromisedFields<Schema.ConferenceConfiguration>>()
+                ConferenceConfiguration: keys<PromisedFields<Schema.ConferenceConfiguration>>(),
+                WatchedItems: keys<PromisedFields<Schema.WatchedItems>>()
             };
         }
         return Cache.relations;
@@ -178,7 +181,8 @@ export default class Cache {
                 PrivilegedConferenceDetails: keys<PromisedNonArrayFields<Schema.PrivilegedConferenceDetails>>(),
                 YouTubeFeed: keys<PromisedNonArrayFields<Schema.YouTubeFeed>>(),
                 ZoomRoom: keys<PromisedNonArrayFields<Schema.ZoomRoom>>(),
-                ConferenceConfiguration: keys<PromisedNonArrayFields<Schema.ConferenceConfiguration>>()
+                ConferenceConfiguration: keys<PromisedNonArrayFields<Schema.ConferenceConfiguration>>(),
+                WatchedItems: keys<PromisedNonArrayFields<Schema.WatchedItems>>()
             };
         }
         return Cache.uniqueRelations;
@@ -207,7 +211,8 @@ export default class Cache {
             PrivilegedConferenceDetails: keys<PromisedArrayFields<Schema.PrivilegedConferenceDetails>>(),
             YouTubeFeed: keys<PromisedArrayFields<Schema.YouTubeFeed>>(),
             ZoomRoom: keys<PromisedArrayFields<Schema.ZoomRoom>>(),
-            ConferenceConfiguration: keys<PromisedArrayFields<Schema.ConferenceConfiguration>>()
+            ConferenceConfiguration: keys<PromisedArrayFields<Schema.ConferenceConfiguration>>(),
+            WatchedItems: keys<PromisedArrayFields<Schema.WatchedItems>>()
         };
 
     // If changing this list, remember to update the `afterSave` callbacks in
@@ -235,8 +240,8 @@ export default class Cache {
 
     private logger: DebugLogger = new DebugLogger("Cache");
     private readonly cacheStaleTime = 1000 * 60 * 60 * 24; // 24 hours
-    private readonly cacheInactiveTime = 1000 * 60 * 60; // 60 minutes
-    private readonly liveQueryTrustedTime = 1000 * 60 * 5; // 5 minutes
+    private readonly cacheInactiveTime = 1000 * 60 * 5; // 5 minutes
+    private readonly liveQueryTrustedTime = 1000 * 60 * 1; // 1 minutes
 
     private static parseLive: Parse.LiveQueryClient | null = null;
     private liveQuerySubscriptions: {

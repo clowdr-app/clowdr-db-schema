@@ -108,7 +108,8 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     UserProfile: {
         conference: "Conference",
         primaryFlair: "Flair",
-        user: "_User"
+        user: "_User",
+        watched: "WatchedItems"
     },
     ZoomRoom: {
         conference: "Conference",
@@ -124,6 +125,9 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
         textChat: "TextChat",
     },
     YouTubeFeed: {
+        conference: "Conference"
+    },
+    WatchedItems: {
         conference: "Conference"
     }
 };

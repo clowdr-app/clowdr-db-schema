@@ -41,7 +41,8 @@ export default class Cache {
                 _User: Interface._User,
                 UserProfile: Interface.UserProfile,
                 YouTubeFeed: Interface.YouTubeFeed,
-                ZoomRoom: Interface.ZoomRoom
+                ZoomRoom: Interface.ZoomRoom,
+                WatchedItems: Interface.WatchedItems
             };
         }
         return Cache.constructors;
@@ -67,7 +68,8 @@ export default class Cache {
             PrivilegedConferenceDetails: keys<Schema.PrivilegedConferenceDetails>(),
             YouTubeFeed: keys<Schema.YouTubeFeed>(),
             ZoomRoom: keys<Schema.ZoomRoom>(),
-            ConferenceConfiguration: keys<Schema.ConferenceConfiguration>()
+            ConferenceConfiguration: keys<Schema.ConferenceConfiguration>(),
+            WatchedItems: keys<Schema.WatchedItems>()
         };
 
     readonly Relations: {
@@ -90,7 +92,8 @@ export default class Cache {
             PrivilegedConferenceDetails: keys<PromisedFields<Schema.PrivilegedConferenceDetails>>(),
             YouTubeFeed: keys<PromisedFields<Schema.YouTubeFeed>>(),
             ZoomRoom: keys<PromisedFields<Schema.ZoomRoom>>(),
-            ConferenceConfiguration: keys<PromisedFields<Schema.ConferenceConfiguration>>()
+            ConferenceConfiguration: keys<PromisedFields<Schema.ConferenceConfiguration>>(),
+            WatchedItems: keys<PromisedFields<Schema.WatchedItems>>()
         };
 
     readonly UniqueRelations: {
@@ -113,7 +116,8 @@ export default class Cache {
             PrivilegedConferenceDetails: keys<PromisedNonArrayFields<Schema.PrivilegedConferenceDetails>>(),
             YouTubeFeed: keys<PromisedNonArrayFields<Schema.YouTubeFeed>>(),
             ZoomRoom: keys<PromisedNonArrayFields<Schema.ZoomRoom>>(),
-            ConferenceConfiguration: keys<PromisedNonArrayFields<Schema.ConferenceConfiguration>>()
+            ConferenceConfiguration: keys<PromisedNonArrayFields<Schema.ConferenceConfiguration>>(),
+            WatchedItems: keys<PromisedNonArrayFields<Schema.WatchedItems>>()
         };
 
     readonly NonUniqueRelations: {
@@ -136,7 +140,8 @@ export default class Cache {
             PrivilegedConferenceDetails: keys<PromisedArrayFields<Schema.PrivilegedConferenceDetails>>(),
             YouTubeFeed: keys<PromisedArrayFields<Schema.YouTubeFeed>>(),
             ZoomRoom: keys<PromisedArrayFields<Schema.ZoomRoom>>(),
-            ConferenceConfiguration: keys<PromisedArrayFields<Schema.ConferenceConfiguration>>()
+            ConferenceConfiguration: keys<PromisedArrayFields<Schema.ConferenceConfiguration>>(),
+            WatchedItems: keys<PromisedArrayFields<Schema.WatchedItems>>()
         };
 
     readonly KEY_PATH: "id" = "id";

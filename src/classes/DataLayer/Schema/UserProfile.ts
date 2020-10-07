@@ -22,6 +22,11 @@ export default interface Schema extends Base {
     pronouns: Array<string>;
     realName: string;
     tags: Array<UserProfileTag>;
+    watchedEvents: Array<string> | undefined;
+    watchedSessions: Array<string> | undefined;
+    watchedTextChats: Array<string> | undefined;
+    watchedTracks: Array<string> | undefined;
+    watchedVideoRooms: Array<string> | undefined;
     webpage: string | undefined;
     welcomeModalShown: boolean;
 

@@ -1,7 +1,7 @@
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
-import { Conference, Flair, ProgramPerson, _User } from ".";
+import { Conference, Flair, ProgramPerson, ProgramSession, ProgramSessionEvent, ProgramTrack, TextChat, VideoRoom, _User } from ".";
 import { removeNull } from "../../Util";
 
 type SchemaT = Schema.UserProfile;
@@ -110,6 +110,66 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     set welcomeModalShown(value) {
         this.data.welcomeModalShown = value;
+    }
+
+    get watchedEvents(): string[] | undefined {
+        return this.data.watchedEvents;
+    }
+
+    get watchedEventObjects(): Promise<Array<ProgramSessionEvent>> {
+        return Promise.all(this.data.watchedEvents?.map(id => ProgramSessionEvent.get(id, this.conferenceId)) ?? []).then(removeNull);
+    }
+
+    set watchedEvents(value) {
+        this.data.watchedEvents = value;
+    }
+
+    get watchedSessions(): string[] | undefined {
+        return this.data.watchedSessions;
+    }
+
+    get watchedSessionObjects(): Promise<Array<ProgramSession>> {
+        return Promise.all(this.data.watchedSessions?.map(id => ProgramSession.get(id, this.conferenceId)) ?? []).then(removeNull);
+    }
+
+    set watchedSessions(value) {
+        this.data.watchedSessions = value;
+    }
+
+    get watchedTextChats(): string[] | undefined {
+        return this.data.watchedTextChats;
+    }
+
+    get watchedTextChatObjects(): Promise<Array<TextChat>> {
+        return Promise.all(this.data.watchedTextChats?.map(id => TextChat.get(id, this.conferenceId)) ?? []).then(removeNull);
+    }
+
+    set watchedTextChats(value) {
+        this.data.watchedTextChats = value;
+    }
+
+    get watchedTracks(): string[] | undefined {
+        return this.data.watchedTracks;
+    }
+
+    get watchedTrackObjects(): Promise<Array<ProgramTrack>> {
+        return Promise.all(this.data.watchedTracks?.map(id => ProgramTrack.get(id, this.conferenceId)) ?? []).then(removeNull);
+    }
+
+    set watchedTracks(value) {
+        this.data.watchedTracks = value;
+    }
+
+    get watchedVideoRooms(): string[] | undefined {
+        return this.data.watchedVideoRooms;
+    }
+
+    get watchedVideoRoomObjects(): Promise<Array<VideoRoom>> {
+        return Promise.all(this.data.watchedVideoRooms?.map(id => VideoRoom.get(id, this.conferenceId)) ?? []).then(removeNull);
+    }
+
+    set watchedVideoRooms(value) {
+        this.data.watchedVideoRooms = value;
     }
 
     get conference(): Promise<Conference> {

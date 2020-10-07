@@ -1062,23 +1062,22 @@ export default class Cache {
             return await this.getFromCache(tableName, id) as T;
         }
         catch {
-            return null;
-            // let query = await this.newParseQuery(tableName);
-            // try {
-            //     let resultP = query.get(id);
-            //     let result = await resultP;
-            //     return await this.addItemToCache<K, T>(result, tableName);
-            // }
-            // catch (reason) {
-            //     this.logger.warn("Fetch from database of cached item failed", {
-            //         conferenceId: this.conferenceId,
-            //         tableName: tableName,
-            //         id: id,
-            //         reason: reason
-            //     });
+            let query = await this.newParseQuery(tableName);
+            try {
+                let resultP = query.get(id);
+                let result = await resultP;
+                return await this.addItemToCache<K, T>(result, tableName);
+            }
+            catch (reason) {
+                this.logger.warn("Fetch from database of cached item failed", {
+                    conferenceId: this.conferenceId,
+                    tableName: tableName,
+                    id: id,
+                    reason: reason
+                });
 
-            //     return null;
-            // }
+                return null;
+            }
         }
     }
 

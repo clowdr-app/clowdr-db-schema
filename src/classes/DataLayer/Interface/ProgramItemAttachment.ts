@@ -38,6 +38,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
     get attachmentType(): Promise<AttachmentType> {
         return this.uniqueRelated("attachmentType");
     }
+    
+    get attachmentTypeId(): string {
+        return this.data.attachmentType;
+    }
 
 
     static get(id: string, conferenceId: string): Promise<Class | null> {

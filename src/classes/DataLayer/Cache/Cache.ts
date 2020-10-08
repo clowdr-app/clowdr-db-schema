@@ -607,11 +607,14 @@ export default class Cache {
         _db: IDBPDatabase<ExtendedCachedSchema> | null = null
     ): Promise<T> {
         let schema: any = {
-            id: parse.id
+            id: parse.id,
+            acl: {
+                permissionsById: parse.getACL()?.permissionsById
+            }
         };
         for (let _key of Cache.Fields[tableName]) {
             let key = _key as KnownKeys<LocalDataT[K]>;
-            if (key !== "id") {
+            if (key !== "id" && key !== "acl") {
                 // Yes these casts are safe
 
                 let rels = Cache.Relations[tableName] as Array<string>;

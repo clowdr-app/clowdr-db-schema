@@ -9,6 +9,8 @@ import UncachedSchema from "../UncachedSchema";
 import { CachedSchemaKeys, IBase, PromisesRemapped, RelationsToTableNames, UncachedSchemaKeys, WholeSchema, WholeSchemaKeys } from "../WholeSchema";
 import { ISimpleEvent } from "strongly-typed-events";
 import { DataDeletedEventDetails, DataUpdatedEventDetails } from "../Cache/Cache";
+import { ACLSchema } from "../Schema/Base";
+import assert from "assert";
 
 /*
  * 2020-09-09 A note to future developers on constructors
@@ -350,6 +352,7 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
         }
         else {
             let query = new Parse.Query<Parse.Object<PromisesRemapped<CachedSchema[K]["value"]>>>(this.tableName);
+            query.includeAll();
             return query.get(this.id);
         }
     }
@@ -364,6 +367,10 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
 
     get updatedAt(): Date {
         return this.data.updatedAt;
+    }
+
+    get acl(): ACLSchema {
+        return this.data.acl;
     }
 
     async save(): Promise<void> {
@@ -496,6 +503,14 @@ export abstract class UncachedBase<K extends UncachedSchemaKeys> implements IBas
 
     get updatedAt(): Date {
         return this.parse.updatedAt;
+    }
+
+    get acl(): ACLSchema {
+        const x = this.parse.getACL();
+        assert(x, "Could not get ACL.");
+        return {
+            permissionsById: x.permissionsById
+        };
     }
 
     async save(): Promise<void> {

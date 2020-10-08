@@ -518,32 +518,27 @@ export default class Cache {
 
             subscription.on("create", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} created in conference ${this.conferenceId}`, parseObj);
-                // Allow Parse time to update the object
-                setTimeout(() => this.addItemToCache(parseObj as any, tableName), 5);
+                this.addItemToCache(parseObj as any, tableName);
             });
 
             subscription.on("update", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} updated in conference ${this.conferenceId}`, parseObj);
-                // Allow Parse time to update the object
-                setTimeout(() => this.addItemToCache(parseObj as any, tableName), 5);
+                this.addItemToCache(parseObj as any, tableName);
             });
 
             subscription.on("enter", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} entered in conference ${this.conferenceId}`, parseObj);
-                // Allow Parse time to update the object
-                setTimeout(() => this.addItemToCache(parseObj as any, tableName), 5);
+                this.addItemToCache(parseObj as any, tableName);
             });
 
             subscription.on("leave", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} left in conference ${this.conferenceId}`, parseObj);
-                // Allow Parse time to update the object
-                setTimeout(() => this.addItemToCache(parseObj as any, tableName), 5);
+                this.addItemToCache(parseObj as any, tableName);
             });
 
             subscription.on("delete", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} deleted from conference ${this.conferenceId}`, parseObj);
-                // Allow Parse time to update the object
-                setTimeout(() => this.removeItemFromCache(tableName, parseObj.id), 5);
+                this.removeItemFromCache(tableName, parseObj.id);
             });
 
             // This isn't in the TypeScript types, but it is in the docs & API.

@@ -131,9 +131,13 @@ export default class Class extends CachedBase<K> implements SchemaT {
     get programPersons(): Promise<ProgramPerson[]> {
         return StaticBaseImpl.getAllByField("ProgramPerson", "profile", this.id, this.conferenceId);
     }
-    
+
     get watched(): Promise<WatchedItems> {
         return this.uniqueRelated("watched");
+    }
+    
+    get watchedId(): string {
+        return this.data.watched;
     }
 
     get user(): Promise<_User> {

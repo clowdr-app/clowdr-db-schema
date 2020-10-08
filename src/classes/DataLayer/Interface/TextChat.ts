@@ -23,6 +23,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.mirrored;
     }
 
+    get isDM(): boolean {
+        return this.data.isDM;
+    }
+
     get name(): string {
         return this.data.name;
     }

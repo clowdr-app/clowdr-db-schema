@@ -173,7 +173,12 @@ export abstract class StaticBaseImpl {
         if (StaticBaseImpl.IsCachable(tableName, conferenceId)) {
             const _tableName = tableName as CachedSchemaKeys;
             const cache = await Caches.get(conferenceId);
-            result = await cache.getByField(_tableName, fieldName as any, searchFor) as unknown as T;
+            if (cache.IsInitialised && cache.IsUserAuthenticated) {
+                result = await cache.getByField(_tableName, fieldName as any, searchFor) as unknown as T;
+            }
+            else {
+                trustCache = false;
+            }
         }
         else {
             trustCache = false;
@@ -257,7 +262,12 @@ export abstract class StaticBaseImpl {
         if (StaticBaseImpl.IsCachable(tableName, conferenceId)) {
             const _tableName = tableName as CachedSchemaKeys;
             const cache = await Caches.get(conferenceId);
-            results = await cache.getAllByField(_tableName, fieldName as any, searchFor) as unknown as T[];
+            if (cache.IsInitialised && cache.IsUserAuthenticated) {
+                results = await cache.getAllByField(_tableName, fieldName as any, searchFor) as unknown as T[];
+            }
+            else {
+                trustCache = false;
+            }
         }
         else {
             trustCache = false;

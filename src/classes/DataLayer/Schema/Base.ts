@@ -1,5 +1,10 @@
 export type ACLSchema = {
-    permissionsById: { [k: string]: any }
+    permissionsById: {
+        [k: string]: {
+            read?: boolean;
+            write?: boolean
+        }
+    }
 }
 
 export default interface Base {

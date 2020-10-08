@@ -384,7 +384,7 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
         
         for (let _key of Cache.Fields[this.tableName]) {
             let key = _key as KnownKeys<LocalDataT[K]>;
-            if (key !== "id") {
+            if (key !== "id" && key !== "acl") {
                 // Yes these casts are safe
 
                 let rels = Cache.Relations[this.tableName] as Array<string>;
@@ -430,6 +430,37 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
                         this.parse.set(key as any, this.data[key]);
                     }
                 }
+            }
+            else if (key === "acl") {
+                const newACL = new Parse.ACL();
+                const perms = this.data.acl.permissionsById;
+                const permKeys = Object.keys(this.data.acl.permissionsById);
+                for (const permKey of permKeys) {
+                    const perm = perms[permKey];
+                    if (perm.read) {
+                        if (permKey === "*") {
+                            newACL.setPublicReadAccess(true);
+                        }
+                        else if (permKey.startsWith("role:")) {
+                            newACL.setRoleReadAccess(permKey.substr(5), true);
+                        }
+                        else {
+                            newACL.setReadAccess(permKey, true);
+                        }
+                    }
+                    if (perm.write) {
+                        if (permKey === "*") {
+                            newACL.setPublicWriteAccess(true);
+                        }
+                        else if (permKey.startsWith("role:")) {
+                            newACL.setRoleWriteAccess(permKey.substr(5), true);
+                        }
+                        else {
+                            newACL.setWriteAccess(permKey, true);
+                        }
+                    }
+                }
+                this.parse.setACL(newACL);
             }
         }
 

@@ -526,6 +526,16 @@ export default class Cache {
                 this.addItemToCache(parseObj as any, tableName);
             });
 
+            subscription.on("enter", (parseObj) => {
+                this.logger.info(`Parse Live Query: ${tableName} entered in conference ${this.conferenceId}`, parseObj);
+                this.addItemToCache(parseObj as any, tableName);
+            });
+
+            subscription.on("leave", (parseObj) => {
+                this.logger.info(`Parse Live Query: ${tableName} left in conference ${this.conferenceId}`, parseObj);
+                this.addItemToCache(parseObj as any, tableName);
+            });
+
             subscription.on("delete", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} deleted from conference ${this.conferenceId}`, parseObj);
                 this.removeItemFromCache(tableName, parseObj.id);

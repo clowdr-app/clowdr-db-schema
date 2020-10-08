@@ -3,6 +3,7 @@ import { Conference } from "../Interface";
 
 export default interface Schema extends Base {
     autoWatch: boolean;
+    isDM: boolean;
     mirrored: boolean;
     name: string;
     twilioID: string;

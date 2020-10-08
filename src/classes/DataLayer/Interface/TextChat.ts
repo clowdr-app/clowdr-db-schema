@@ -19,6 +19,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.autoWatch;
     }
 
+    set autoWatch(value) {
+        this.data.autoWatch = value;
+    }
+
     get mirrored(): boolean {
         return this.data.mirrored;
     }

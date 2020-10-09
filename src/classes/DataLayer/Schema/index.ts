@@ -2,6 +2,7 @@ export type { default as Base } from "./Base";
 export type { default as _Role } from "./_Role";
 export type { default as _User } from "./_User";
 export type { default as AttachmentType } from "./AttachmentType";
+export type { default as AuditLog } from "./AuditLog";
 export type { default as Conference } from "./Conference";
 export type { default as ConferenceConfiguration } from "./ConferenceConfiguration";
 export type { default as ContentFeed } from "./ContentFeed";

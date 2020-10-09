@@ -47,6 +47,10 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     AttachmentType: {
         conference: "Conference"
     },
+    AuditLog: {
+        conference: "Conference",
+        actor: "UserProfile"
+    },
     Conference: {
     },
     ConferenceConfiguration: {
@@ -115,7 +119,8 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
         conference: "Conference",
     },
     TextChat: {
-        conference: "Conference"
+        conference: "Conference",
+        creator: "UserProfile"
     },
     TextChatMessage: {
         chat: "TextChat"

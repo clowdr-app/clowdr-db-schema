@@ -17,6 +17,7 @@ export default interface Schema extends Base {
     dataConsentGiven: boolean;
     displayName: string;
     flairs: Array<string>;
+    isBanned: boolean;
     position: string | undefined;
     profilePhoto: Parse.File | undefined;
     pronouns: Array<string>;

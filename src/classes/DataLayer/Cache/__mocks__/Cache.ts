@@ -42,7 +42,8 @@ export default class Cache {
                 UserProfile: Interface.UserProfile,
                 YouTubeFeed: Interface.YouTubeFeed,
                 ZoomRoom: Interface.ZoomRoom,
-                WatchedItems: Interface.WatchedItems
+                WatchedItems: Interface.WatchedItems,
+                AuditLog: Interface.AuditLog
             };
         }
         return Cache.constructors;

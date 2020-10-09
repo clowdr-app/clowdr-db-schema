@@ -1,4 +1,4 @@
-import { Conference } from ".";
+import { Conference, UserProfile } from ".";
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
@@ -35,8 +35,20 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.name;
     }
 
+    get mode(): string {
+        return this.data.mode;
+    }
+
+    get relatedModerationKey(): string | undefined {
+        return this.data.relatedModerationKey;
+    }
+
     get twilioID(): string {
         return this.data.twilioID;
+    }
+
+    get creator(): Promise<UserProfile> {
+        return this.uniqueRelated("creator");
     }
 
     get conference(): Promise<Conference> {

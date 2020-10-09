@@ -15,6 +15,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null) {
         super(conferenceId, K_str, data, parse);
     }
+    
+    get isBanned(): boolean {
+        return this.data.isBanned;
+    }
 
     get affiliation(): string | undefined {
         return this.data.affiliation;

@@ -4,6 +4,11 @@ import * as Schema from "./Schema";
 import { Indexes } from './CachedSchema';
 
 export default interface UncachedSchema extends IDB.DBSchema {
+    AuditLog: {
+        key: string;
+        value: Schema.AuditLog;
+        indexes: Indexes<Schema.AuditLog>;
+    },
     Registration: {
         key: string;
         value: Schema.Registration;

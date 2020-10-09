@@ -44,10 +44,8 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return Promise.all(this.data.participants.map(id => UserProfile.get(id, this.conferenceId))).then(removeNull);
     }
 
-    get userIdsWithAccess(): Promise<Array<string>> {
-        return this.getUncachedParseObject().then(async obj => {
-            return Object.keys(obj.getACL()?.permissionsById ?? {}).filter(x => !x.startsWith("role:"));
-        });
+    get userIdsWithAccess(): Array<string> {
+        return Object.keys(this.data.acl.permissionsById ?? {}).filter(x => !x.startsWith("role:"));
     }
 
     get conference(): Promise<Conference> {

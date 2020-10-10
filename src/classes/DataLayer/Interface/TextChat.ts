@@ -39,6 +39,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
     get mode(): TextChatModes {
         return this.data.mode;
     }
+    
+    set mode(value) {
+        this.data.mode = value;
+    }
 
     get relatedModerationKey(): string | undefined {
         return this.data.relatedModerationKey;

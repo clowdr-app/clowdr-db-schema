@@ -534,7 +534,7 @@ export default class Cache {
 
             subscription.on("leave", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} left in conference ${this.conferenceId}`, parseObj);
-                this.addItemToCache(parseObj as any, tableName);
+                this.removeItemFromCache(tableName, parseObj.id);
             });
 
             subscription.on("delete", (parseObj) => {

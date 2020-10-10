@@ -1,5 +1,6 @@
 import { Conference, UserProfile } from ".";
 import * as Schema from "../Schema";
+import { TextChatModes } from "../Schema/TextChat";
 import { PromisesRemapped } from "../WholeSchema";
 import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
 
@@ -35,7 +36,7 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.name;
     }
 
-    get mode(): string {
+    get mode(): TextChatModes {
         return this.data.mode;
     }
 

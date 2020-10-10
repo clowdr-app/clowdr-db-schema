@@ -21,3 +21,4 @@ export { default as VideoRoom } from "./VideoRoom";
 export { default as WatchedItems } from "./WatchedItems";
 export { default as YouTubeFeed } from "./YouTubeFeed";
 export { default as ZoomRoom } from "./ZoomRoom";
+export type { TextChatModes } from "../Schema/TextChat";

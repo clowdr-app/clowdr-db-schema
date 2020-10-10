@@ -54,6 +54,13 @@ export default class Class extends UncachedBase<K> implements SchemaT {
         })).some(x => !!x);
     }
 
+    static async userProfileIdsOfRoles(conferenceId: string, roles: Array<RoleNames>): Promise<Array<string>> {
+        return Parse.Cloud.run("users-in-roles", {
+            conference: conferenceId,
+            roles
+        });
+    }
+
     static get(id: string, conferenceId?: string): Promise<Class | null> {
         return StaticBaseImpl.get(K_str, id, conferenceId);
     }

@@ -148,6 +148,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.uniqueRelated("user");
     }
 
+    /**
+     * `_User` table is protected by ACLs, so attendees cannot use `UserProfile.userId`
+     * for anyone but themselves.
+     */
     get userId(): string {
         return this.data.user;
     }

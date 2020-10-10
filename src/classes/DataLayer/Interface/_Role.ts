@@ -34,6 +34,15 @@ export default class Class extends UncachedBase<K> implements SchemaT {
         return confId + "-" + roleName;
     }
 
+    /**
+     * If the current user is attendee/manager, only apply this function to the
+     * current user.
+     * 
+     * `_User` table is protected by ACLs, so attendees cannot access all the
+     * values of user-related fields. This means the `users` of `_Role.users`
+     * will only return the current user or none at all (not every other user in
+     * the role).
+     */
     static async isUserInRoles(userId: string, conferenceId: string, roles: Array<RoleNames>): Promise<boolean> {
         const q = new Parse.Query<Parse.Object<PromisesRemapped<SchemaT>>>(K_str);
         q.equalTo("conference", { __type: "Pointer", className: "Conference", objectId: conferenceId });

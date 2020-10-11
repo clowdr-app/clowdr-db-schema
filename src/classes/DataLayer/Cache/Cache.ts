@@ -344,11 +344,11 @@ export default class Cache {
         return this.isUserAuthenticated;
     }
 
-    public async updateUserAuthenticated(value: { authed: false } | { authed: true; sessionToken: string }) {
+    public async updateUserAuthenticated(value: { authed: false } | { authed: true; sessionToken: string }, forceRefill: boolean) {
         this.isUserAuthenticated = value.authed;
         if (value.authed) {
             this.userSessionToken = value.sessionToken;
-            this.refresh();
+            this.refresh(forceRefill);
         }
         else {
             await this.unsubscribeFromUpdates();
@@ -434,7 +434,7 @@ export default class Cache {
         return result;
     }
 
-    public async refresh(): Promise<void> {
+    public async refresh(forceRefill: boolean): Promise<void> {
         if (!this.isInitialised || !this.dbPromise) {
             throw new Error("You must call initialised first!");
         }
@@ -457,12 +457,13 @@ export default class Cache {
                                 let localRefillTime = localRefillTimes[store] ?? new Date(0);
                                 let isProgramTable = this.ProgramTableNames.includes(store);
                                 let shouldUpdate =
-                                    isProgramTable
+                                    forceRefill ||
+                                    (isProgramTable
                                         ? remoteLastProgramUpdateTime.getTime() > localRefillTime.getTime() - 10000
-                                        : localRefillTime.getTime() + this.cacheInactiveTime < now;
+                                        : localRefillTime.getTime() + this.cacheInactiveTime < now);
 
                                 if (shouldUpdate) {
-                                    let shouldClear = localRefillTime.getTime() + this.cacheStaleTime < now;
+                                    let shouldClear = forceRefill || localRefillTime.getTime() + this.cacheStaleTime < now;
                                     let fillFrom = localRefillTimes[store];
                                     if (shouldClear) {
                                         await db.clear(store);
@@ -473,7 +474,7 @@ export default class Cache {
 
                                     return this.fillCache(store, db, fillFrom);
                                 }
-                                
+
                                 if (shouldUpdate || localRefillTime.getTime() + this.liveQueryTrustedTime > now) {
                                     db.put("LocalRefillTimes", { id: store, lastRefillAt: new Date(now) });
                                 }

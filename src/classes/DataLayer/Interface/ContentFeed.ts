@@ -80,6 +80,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return StaticBaseImpl.getAll(K_str, conferenceId);
     }
 
+    static getAllByVideoRoom(videoRoomId: string, conferenceId: string): Promise<Array<Class>> {
+        return StaticBaseImpl.getAllByField(K_str, "videoRoom", videoRoomId, conferenceId);
+    }
+
     static onDataUpdated(conferenceId: string) {
         return StaticBaseImpl.onDataUpdated(K_str, conferenceId);
     }

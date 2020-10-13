@@ -340,7 +340,7 @@ export abstract class StaticBaseImpl {
  */
 export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K> {
     constructor(
-        protected conferenceId: string,
+        public readonly conferenceId: string,
         protected tableName: K,
         protected data: LocalDataT[K],
         protected parse: Parse.Object<PromisesRemapped<CachedSchema[K]["value"]>> | null = null) {

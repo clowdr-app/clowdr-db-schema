@@ -465,7 +465,7 @@ export default class Cache {
                                 if (shouldUpdate) {
                                     let shouldClear = forceRefill || localRefillTime.getTime() + this.cacheStaleTime < now;
                                     let fillFrom = localRefillTimes[store];
-                                    if (shouldClear) {
+                                    if (shouldClear || isProgramTable) {
                                         await db.clear(store);
                                         fillFrom = new Date(0);
                                     }

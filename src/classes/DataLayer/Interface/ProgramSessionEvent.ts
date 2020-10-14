@@ -35,6 +35,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.uniqueRelated("item");
     }
 
+    get itemId(): string {
+        return this.data.item;
+    }
+
     get sessionId(): string {
         return this.data.session;
     }

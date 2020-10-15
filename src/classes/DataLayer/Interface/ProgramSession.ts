@@ -27,6 +27,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.endTime;
     }
 
+    get chair(): string | undefined {
+        return this.data.chair;
+    }
+
     get conference(): Promise<Conference> {
         return this.uniqueRelated("conference");
     }

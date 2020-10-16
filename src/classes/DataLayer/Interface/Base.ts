@@ -233,7 +233,8 @@ export abstract class StaticBaseImpl {
     static async getAll<K extends WholeSchemaKeys, T extends IBase<K>>(
         tableName: K,
         conferenceId?: string): Promise<Array<T>> {
-        if (StaticBaseImpl.IsCachable(tableName, conferenceId)) {
+        // Conference is a special-case table
+        if (StaticBaseImpl.IsCachable(tableName, conferenceId) && tableName !== "Conference") {
             let cache = await Caches.get(conferenceId);
             return cache.getAll(tableName as any) as any;
         }

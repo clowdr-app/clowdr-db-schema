@@ -478,6 +478,17 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
         await this.parse.save();
     }
 
+    async delete(): Promise<void> {
+        if (!this.parse) {
+            // @ts-ignore
+            let parseData: PromisesRemapped<CachedSchema[K]["value"]> = {
+                id: this.id
+            };
+            this.parse = new Parse.Object<PromisesRemapped<CachedSchema[K]["value"]>>(this.tableName, parseData);
+        }
+        await this.parse.destroy();
+    }
+
     protected async uniqueRelated<S extends KnownKeys<RelatedDataT[K]>>(field: S): Promise<RelatedDataT[K][S]> {
         let cache = await Caches.get(this.conferenceId);
         let r2t: Record<string, string> = RelationsToTableNames[this.tableName];
@@ -557,6 +568,10 @@ export abstract class UncachedBase<K extends UncachedSchemaKeys> implements IBas
 
     async save(): Promise<void> {
         await this.parse.save();
+    }
+
+    async delete(): Promise<void> {
+        await this.parse.destroy();
     }
 
     protected async uniqueRelated<S extends KnownKeys<RelatedDataT[K]>>(field: S): Promise<RelatedDataT[K][S]> {

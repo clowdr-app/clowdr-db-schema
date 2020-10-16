@@ -241,7 +241,7 @@ export default class Cache {
 
     private logger: DebugLogger = new DebugLogger("Cache");
     private readonly cacheStaleTime = 1000 * 60 * 60 * 24; // 24 hours
-    private readonly cacheInactiveTime = 1000 * 60 * 5; // 5 minutes
+    private readonly cacheInactiveTime = 1000 * 60 * 60; // 60 minutes
     private readonly liveQueryTrustedTime = 1000 * 60 * 1; // 1 minutes
 
     private static parseLive: Parse.LiveQueryClient | null = null;

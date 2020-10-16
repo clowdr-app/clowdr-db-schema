@@ -232,7 +232,7 @@ export default class Cache {
     readonly KEY_PATH: "id" = "id";
 
     private dbPromise: Promise<IDBPDatabase<ExtendedCachedSchema>> | null = null;
-    private conference: Promise<Parse.Object<PromisesRemapped<Schema.Conference>>> | null = null;
+    private conference: Promise<Parse.Object<PromisesRemapped<Schema.Conference>> | null> | null = null;
 
     private isInitialised: boolean = false;
     private isUserAuthenticated: boolean = false;
@@ -286,23 +286,6 @@ export default class Cache {
         }
     }
 
-    public async createTestAttachmentType() {
-        let x = new Parse.Object<PromisesRemapped<Schema.AttachmentType>>("AttachmentType", {
-            conference: await this.conference,
-            createdAt: undefined,
-            displayAsLink: true,
-            extra: undefined,
-            fileTypes: [],
-            id: undefined,
-            isCoverImage: false,
-            name: "Test type",
-            ordinal: 0,
-            supportsFile: false,
-            updatedAt: undefined
-        } as any);
-        x.save();
-    }
-
     get IsDebugEnabled(): boolean {
         return this.logger.isEnabled;
     }
@@ -322,13 +305,14 @@ export default class Cache {
         return this.isInitialised;
     }
 
-    get Ready(): Promise<void> {
+    get Ready(): Promise<boolean> {
         if (this.dbPromise) {
             // Wrap in a new promise to hide the internal one
             return new Promise(async (resolve, reject) => {
                 try {
                     await this.dbPromise;
-                    resolve();
+                    const conf = await this.conference;
+                    resolve(!!conf);
                 }
                 catch {
                     reject("Cache failed to initialise.");
@@ -400,7 +384,7 @@ export default class Cache {
                             let confP = new Parse.Query<Parse.Object<PromisesRemapped<Schema.Conference>>>("Conference").get(this.conferenceId) || null;
                             let conf = await confP;
                             if (!conf) {
-                                resolve(undefined);
+                                resolve(null);
                                 return;
                             }
 
@@ -408,7 +392,10 @@ export default class Cache {
                         }
                         catch (e) {
                             this.logger.error("Error getting conference instance", e);
-                            resolve(undefined);
+                            if (e.toString().includes("Object not found")) {
+                                await this.deleteDatabase(false);
+                            }
+                            resolve(null);
                         }
                     }
                     catch (e) {
@@ -1053,6 +1040,7 @@ export default class Cache {
         assert(this.isInitialised);
         assert(this.conference);
         let conf = await this.conference;
+        assert(conf, "Conference does not exist.");
 
         let query = new Parse.Query<Parse.Object<PromisesRemapped<CachedSchema[K]["value"]>>>(tableName);
         query.includeAll();

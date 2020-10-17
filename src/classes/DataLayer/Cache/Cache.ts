@@ -989,7 +989,19 @@ export default class Cache {
                 id: id
             });
 
-            return Promise.reject(`${id} is not present in ${tableName} cache for conference ${this.conferenceId}`);
+            if (this.isUserAuthenticated) {
+                let results = await this.fillCache(tableName) as any[];
+                const result = results.find(x => x.id === id);
+                if (result) {
+                    return result;
+                }
+                else {
+                    return Promise.reject(`${id} is not present in ${tableName} cache for conference ${this.conferenceId}`);
+                }
+            }
+            else {
+                return Promise.reject(`${id} is not present in ${tableName} cache for conference ${this.conferenceId}`);
+            }
         }
     }
 
@@ -1065,22 +1077,14 @@ export default class Cache {
             return await this.getFromCache(tableName, id) as T;
         }
         catch {
-            let query = await this.newParseQuery(tableName);
-            try {
-                let resultP = query.get(id);
-                let result = await resultP;
-                return await this.addItemToCache<K, T>(result, tableName);
-            }
-            catch (reason) {
-                this.logger.warn("Fetch from database of cached item failed", {
-                    conferenceId: this.conferenceId,
-                    tableName: tableName,
-                    id: id,
-                    reason: reason
-                });
+            this.logger.warn("Fetch from database of cached item failed", {
+                conferenceId: this.conferenceId,
+                tableName: tableName,
+                id: id,
+                reason: "Not present"
+            });
 
-                return null;
-            }
+            return null;
         }
     }
 

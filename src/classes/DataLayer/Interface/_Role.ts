@@ -35,23 +35,24 @@ export default class Class extends UncachedBase<K> implements SchemaT {
     }
 
     /**
-     * If the current user is attendee/manager, only apply this function to the
-     * current user.
+     * Only apply this function to the current user.
      * 
      * `_User` table is protected by ACLs, so attendees cannot access all the
      * values of user-related fields. This means the `users` of `_Role.users`
      * will only return the current user or none at all (not every other user in
      * the role).
      */
-    static async isUserInRoles(userId: string, conferenceId: string, roles: Array<RoleNames>): Promise<boolean> {
+    static async isUserInRoles<K extends RoleNames>(userId: string, conferenceId: string, roles: Array<K>): Promise<{ [k in K]: boolean }> {
         const q = new Parse.Query<Parse.Object<PromisesRemapped<SchemaT>>>(K_str);
         q.equalTo("conference", { __type: "Pointer", className: "Conference", objectId: conferenceId });
         q.equalTo("users", { __type: "Pointer", className: "_User", objectId: userId });
-        const expectedRoleNames = roles.map(r => Class.generateRoleName(conferenceId, r));
-        return (await q.map(role => {
-            const cRoleName = role.get("name");
-            return expectedRoleNames.includes(cRoleName);
-        })).some(x => !!x);
+        const knownRoles = await q.map(role => role.get("name"));
+        const result: { [k in K]: boolean } = {} as any;
+        for (const role of roles) {
+            const expectedRoleName = Class.generateRoleName(conferenceId, role);
+            result[role] = knownRoles.includes(expectedRoleName);
+        }
+        return result;
     }
 
     static async userProfileIdsOfRoles(conferenceId: string, roles: Array<RoleNames>): Promise<Array<string>> {

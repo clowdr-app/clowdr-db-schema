@@ -122,7 +122,7 @@ export abstract class StaticBaseImpl {
             }
             let _tableName = tableName as CachedSchemaKeys;
             let cache = await Caches.get(conferenceId);
-            return cache.addItemToCache(_parse as any, _tableName) as unknown as T;
+            return cache.addItemToCache(_parse as any, _tableName, false) as unknown as T;
         }
         else {
             const constr = Cache.Constructors[tableName as UncachedSchemaKeys] as UncachedConstructor<any>;
@@ -586,7 +586,7 @@ export abstract class UncachedBase<K extends UncachedSchemaKeys> implements IBas
                 }
 
                 let cache = await Caches.get(confId);
-                return cache.addItemToCache(result, relTableName as any);
+                return cache.addItemToCache(result, relTableName as any, false);
             });
         }
         else {
@@ -610,7 +610,7 @@ export abstract class UncachedBase<K extends UncachedSchemaKeys> implements IBas
                 }
 
                 let cache = await Caches.get(confId);
-                return cache.addItemToCache(result, relTableName as any);
+                return cache.addItemToCache(result, relTableName as any, false);
             }) as RelatedDataT[K][S];
         }
         else {

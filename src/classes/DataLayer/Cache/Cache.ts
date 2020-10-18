@@ -30,7 +30,7 @@ type ExtendedCachedSchemaKeys = KnownKeys<ExtendedCachedSchema>;
 
 export type DataUpdatedEventDetails<K extends CachedSchemaKeys> = {
     table: K;
-    object: CachedBase<K>;
+    objects: CachedBase<K>[];
 };
 
 export type DataDeletedEventDetails<K extends CachedSchemaKeys> = {
@@ -507,17 +507,17 @@ export default class Cache {
 
             subscription.on("create", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} created in conference ${this.conferenceId}`, parseObj);
-                this.addItemToCache(parseObj as any, tableName);
+                this.addItemToCache(parseObj as any, tableName, false);
             });
 
             subscription.on("update", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} updated in conference ${this.conferenceId}`, parseObj);
-                this.addItemToCache(parseObj as any, tableName);
+                this.addItemToCache(parseObj as any, tableName, false);
             });
 
             subscription.on("enter", (parseObj) => {
                 this.logger.info(`Parse Live Query: ${tableName} entered in conference ${this.conferenceId}`, parseObj);
-                this.addItemToCache(parseObj as any, tableName);
+                this.addItemToCache(parseObj as any, tableName, false);
             });
 
             subscription.on("leave", (parseObj) => {
@@ -577,7 +577,7 @@ export default class Cache {
 
                     let results: T[] = [];
                     await itemsQ.eachBatch(async parseObjs => {
-                        const mapped = await Promise.all(parseObjs.map(parse => this.addItemToCache<K, T>(parse, tableName, db)));
+                        const mapped = await Promise.all(parseObjs.map(parse => this.addItemToCache<K, T>(parse, tableName, true, db)));
                         results = results.concat(mapped);
                     }, {
                         batchSize: 1000
@@ -586,6 +586,12 @@ export default class Cache {
                     if (db && fillFrom) {
                         db.put("LocalRefillTimes", { id: tableName, lastRefillAt: new Date() });
                     }
+
+                    let ev = this._onDataUpdated[tableName] as SimpleEventDispatcher<DataUpdatedEventDetails<K>>;
+                    ev.dispatchAsync({
+                        table: tableName,
+                        objects: results as CachedBase<K>[]
+                    });
 
                     this.fillingCachePromises[tableName] = undefined;
                     resolve(results);
@@ -603,7 +609,8 @@ export default class Cache {
     async addItemToCache<K extends CachedSchemaKeys, T extends CachedBase<K>>(
         parse: Parse.Object<PromisesRemapped<CachedSchema[K]["value"]>>,
         tableName: K,
-        _db: IDBPDatabase<ExtendedCachedSchema> | null = null
+        supressEvents: boolean,
+        _db: IDBPDatabase<ExtendedCachedSchema> | null = null,
     ): Promise<T> {
         let schema: any = {
             id: parse.id,
@@ -701,11 +708,13 @@ export default class Cache {
         const constr = Cache.Constructors[tableName];
         let result = new constr(this.conferenceId, schema, parse as any) as unknown as T;
 
-        let ev = this._onDataUpdated[tableName] as SimpleEventDispatcher<DataUpdatedEventDetails<K>>;
-        ev.dispatchAsync({
-            table: tableName,
-            object: result
-        });
+        if (!supressEvents) {
+            let ev = this._onDataUpdated[tableName] as SimpleEventDispatcher<DataUpdatedEventDetails<K>>;
+            ev.dispatchAsync({
+                table: tableName,
+                objects: [result]
+            });
+        }
 
         return result;
     }

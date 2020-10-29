@@ -101,6 +101,14 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     Registration: {
         conference: "Conference",
     },
+    Sponsor: {
+        conference: "Conference",
+        videoRoom: "VideoRoom"
+    },
+    SponsorContent: {
+        conference: "Conference",
+        sponsor: "Sponsor"
+    },
     _Role: {
         conference: "Conference",
         users: "_User",

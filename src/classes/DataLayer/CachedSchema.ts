@@ -3,6 +3,7 @@ import IDB from 'idb';
 import * as Schema from "./Schema";
 import { PromisedKeys } from "../Util";
 import Base from './Schema/Base';
+import { Conference } from './Interface';
 
 // Note: IndexedDB is very limited - it can only handle 1-to-N indexes
 
@@ -87,6 +88,16 @@ export default interface CachedSchema extends CachableDBSchema {
         key: string;
         value: Schema.ProgramTrack;
         indexes: Indexes<Schema.ProgramTrack>;
+    };
+    Sponsor: {
+        key: string;
+        value: Schema.Sponsor;
+        indexes: Indexes<Schema.Sponsor>;
+    };
+    SponsorContent: {
+        key: string;
+        value: Schema.SponsorContent;
+        indexes: Indexes<Schema.SponsorContent>;
     };
     TextChat: {
         key: string;

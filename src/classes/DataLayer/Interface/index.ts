@@ -14,6 +14,8 @@ export { default as ProgramSession } from "./ProgramSession";
 export { default as ProgramSessionEvent } from "./ProgramSessionEvent";
 export { default as ProgramTrack } from "./ProgramTrack";
 export { default as Registration } from "./Registration";
+export { default as Sponsor } from "./Sponsor";
+export { default as SponsorContent } from "./SponsorContent";
 export { default as TextChat } from "./TextChat";
 export { default as TextChatMessage } from "./TextChatMessage";
 export { default as UserProfile } from "./UserProfile";

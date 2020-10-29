@@ -43,7 +43,9 @@ export default class Cache {
                 YouTubeFeed: Interface.YouTubeFeed,
                 ZoomRoom: Interface.ZoomRoom,
                 WatchedItems: Interface.WatchedItems,
-                AuditLog: Interface.AuditLog
+                AuditLog: Interface.AuditLog,
+                Sponsor: Interface.Sponsor,
+                SponsorContent: Interface.SponsorContent
             };
         }
         return Cache.constructors;
@@ -70,7 +72,9 @@ export default class Cache {
             YouTubeFeed: keys<Schema.YouTubeFeed>(),
             ZoomRoom: keys<Schema.ZoomRoom>(),
             ConferenceConfiguration: keys<Schema.ConferenceConfiguration>(),
-            WatchedItems: keys<Schema.WatchedItems>()
+            WatchedItems: keys<Schema.WatchedItems>(),
+            Sponsor: keys<Schema.Sponsor>(),
+            SponsorContent: keys<Schema.SponsorContent>()
         };
 
     readonly Relations: {
@@ -94,7 +98,9 @@ export default class Cache {
             YouTubeFeed: keys<PromisedFields<Schema.YouTubeFeed>>(),
             ZoomRoom: keys<PromisedFields<Schema.ZoomRoom>>(),
             ConferenceConfiguration: keys<PromisedFields<Schema.ConferenceConfiguration>>(),
-            WatchedItems: keys<PromisedFields<Schema.WatchedItems>>()
+            WatchedItems: keys<PromisedFields<Schema.WatchedItems>>(),
+            Sponsor: keys<PromisedFields<Schema.Sponsor>>(),
+            SponsorContent: keys<PromisedFields<Schema.SponsorContent>>()
         };
 
     readonly UniqueRelations: {
@@ -118,7 +124,9 @@ export default class Cache {
             YouTubeFeed: keys<PromisedNonArrayFields<Schema.YouTubeFeed>>(),
             ZoomRoom: keys<PromisedNonArrayFields<Schema.ZoomRoom>>(),
             ConferenceConfiguration: keys<PromisedNonArrayFields<Schema.ConferenceConfiguration>>(),
-            WatchedItems: keys<PromisedNonArrayFields<Schema.WatchedItems>>()
+            WatchedItems: keys<PromisedNonArrayFields<Schema.WatchedItems>>(),
+            Sponsor: keys<PromisedNonArrayFields<Schema.Sponsor>>(),
+            SponsorContent: keys<PromisedNonArrayFields<Schema.SponsorContent>>()
         };
 
     readonly NonUniqueRelations: {
@@ -142,7 +150,9 @@ export default class Cache {
             YouTubeFeed: keys<PromisedArrayFields<Schema.YouTubeFeed>>(),
             ZoomRoom: keys<PromisedArrayFields<Schema.ZoomRoom>>(),
             ConferenceConfiguration: keys<PromisedArrayFields<Schema.ConferenceConfiguration>>(),
-            WatchedItems: keys<PromisedArrayFields<Schema.WatchedItems>>()
+            WatchedItems: keys<PromisedArrayFields<Schema.WatchedItems>>(),
+            Sponsor: keys<PromisedArrayFields<Schema.Sponsor>>(),
+            SponsorContent: keys<PromisedArrayFields<Schema.SponsorContent>>()
         };
 
     readonly KEY_PATH: "id" = "id";

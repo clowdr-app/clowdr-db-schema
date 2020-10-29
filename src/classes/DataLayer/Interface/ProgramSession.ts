@@ -19,14 +19,6 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.title;
     }
 
-    get startTime(): Date {
-        return this.data.startTime;
-    }
-
-    get endTime(): Date {
-        return this.data.endTime;
-    }
-
     get chair(): string | undefined {
         return this.data.chair;
     }

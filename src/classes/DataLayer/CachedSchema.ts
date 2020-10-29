@@ -13,7 +13,7 @@ export type Indexes<T> = { [K in PromisedKeys<T>]: "id" };
 //            be increased.
 
 // Decimal places are not allowed - only positive integers!
-export const SchemaVersion: number = 8;
+export const SchemaVersion: number = 9;
 
 export interface CachableDBSchema extends IDB.DBSchema {
     [s: string]: DBSchemaValue;

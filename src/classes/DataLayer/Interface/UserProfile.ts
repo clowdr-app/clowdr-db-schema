@@ -132,6 +132,14 @@ export default class Class extends CachedBase<K> implements SchemaT {
         this.data.primaryFlair = value;
     }
 
+    get firstLogin(): Date | undefined {
+        return this.data.firstLogin;
+    }
+    
+    set firstLogin(value: Date | undefined) {
+        this.data.firstLogin = value;
+    }
+
     get programPersons(): Promise<ProgramPerson[]> {
         return StaticBaseImpl.getAllByField("ProgramPerson", "profile", this.id, this.conferenceId);
     }

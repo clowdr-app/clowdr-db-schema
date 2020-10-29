@@ -16,6 +16,7 @@ export default interface Schema extends Base {
     country: string | undefined;
     dataConsentGiven: boolean;
     displayName: string;
+    firstLogin: Date | undefined;
     flairs: Array<string>;
     isBanned: boolean;
     position: string | undefined;

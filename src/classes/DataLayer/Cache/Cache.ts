@@ -20,7 +20,7 @@ type ExtendedCachedSchema
             value: {
                 // Must be called `id` to work with the current implementation
                 // of createStore
-                id: CachedSchemaKeys,
+                id: CachedSchemaKeys | "ENTIRE_CACHE",
                 lastRefillAt: Date
             }
         }
@@ -447,40 +447,158 @@ export default class Cache {
                         let localRefillTimes = await this.getLocalRefillTimes(db);
                         const now = Date.now();
 
+                        this.fillingEntireCachePromise = new Promise(async (resolve, reject) => {
+                            try {
+                                let localRefillTime = localRefillTimes["ENTIRE_CACHE"] ?? new Date(0);
+                                if (localRefillTime.getTime() + this.cacheInactiveTime < now) {
+                                    const {
+                                        Conference,
+
+                                        AttachmentType,
+                                        ConferenceConfiguration,
+                                        ContentFeed,
+                                        Flair,
+                                        PrivilegedConferenceDetails,
+                                        ProgramPerson,
+                                        ProgramItem,
+                                        ProgramItemAttachment,
+                                        ProgramSession,
+                                        ProgramSessionEvent,
+                                        ProgramTrack,
+                                        Sponsor,
+                                        SponsorContent,
+                                        TextChat,
+                                        TextChatMessage,
+                                        UserProfile,
+                                        VideoRoom,
+                                        WatchedItems,
+                                        YouTubeFeed,
+                                        ZoomRoom
+                                    } = await Parse.Cloud.run("fetch-cache", {
+                                        conference: this.conferenceId
+                                    });
+
+                                    const _this = this;
+                                    async function updateCacheTable<
+                                        K extends CachedSchemaKeys,
+                                        T extends CachedBase<K>
+                                    >(
+                                        tableName: K,
+                                        data: Array<Parse.Object<PromisesRemapped<CachedSchema[K]["value"]>>>
+                                    ) {
+                                        await db.clear(tableName);
+
+                                        const results: T[] = await Promise.all(data.map(parse => _this.addItemToCache<K, T>(parse, tableName, true, db)));
+
+                                        const ev = _this._onDataUpdated[tableName] as SimpleEventDispatcher<DataUpdatedEventDetails<K>>;
+                                        ev.dispatchAsync({
+                                            table: tableName,
+                                            objects: results as CachedBase<K>[]
+                                        });
+
+                                        return results;
+                                    }
+
+                                    const [resultConference] = await updateCacheTable<"Conference", Interface.Conference>("Conference", [Conference]);
+                                    const resultsAttachmentType = await updateCacheTable<"AttachmentType", Interface.AttachmentType>("AttachmentType", AttachmentType);
+                                    const resultsConferenceConfiguration = await updateCacheTable<"ConferenceConfiguration", Interface.ConferenceConfiguration>("ConferenceConfiguration", ConferenceConfiguration);
+                                    const resultsContentFeed = await updateCacheTable<"ContentFeed", Interface.ContentFeed>("ContentFeed", ContentFeed);
+                                    const resultsFlair = await updateCacheTable<"Flair", Interface.Flair>("Flair", Flair);
+                                    const resultsPrivilegedConferenceDetails = await updateCacheTable<"PrivilegedConferenceDetails", Interface.PrivilegedConferenceDetails>("PrivilegedConferenceDetails", PrivilegedConferenceDetails);
+                                    const resultsProgramPerson = await updateCacheTable<"ProgramPerson", Interface.ProgramPerson>("ProgramPerson", ProgramPerson);
+                                    const resultsProgramItem = await updateCacheTable<"ProgramItem", Interface.ProgramItem>("ProgramItem", ProgramItem);
+                                    const resultsProgramItemAttachment = await updateCacheTable<"ProgramItemAttachment", Interface.ProgramItemAttachment>("ProgramItemAttachment", ProgramItemAttachment);
+                                    const resultsProgramSession = await updateCacheTable<"ProgramSession", Interface.ProgramSession>("ProgramSession", ProgramSession);
+                                    const resultsProgramSessionEvent = await updateCacheTable<"ProgramSessionEvent", Interface.ProgramSessionEvent>("ProgramSessionEvent", ProgramSessionEvent);
+                                    const resultsProgramTrack = await updateCacheTable<"ProgramTrack", Interface.ProgramTrack>("ProgramTrack", ProgramTrack);
+                                    const resultsSponsor = await updateCacheTable<"Sponsor", Interface.Sponsor>("Sponsor", Sponsor);
+                                    const resultsSponsorContent = await updateCacheTable<"SponsorContent", Interface.SponsorContent>("SponsorContent", SponsorContent);
+                                    const resultsTextChat = await updateCacheTable<"TextChat", Interface.TextChat>("TextChat", TextChat);
+                                    const resultsTextChatMessage = await updateCacheTable<"TextChatMessage", Interface.TextChatMessage>("TextChatMessage", TextChatMessage);
+                                    const resultsUserProfile = await updateCacheTable<"UserProfile", Interface.UserProfile>("UserProfile", UserProfile);
+                                    const resultsVideoRoom = await updateCacheTable<"VideoRoom", Interface.VideoRoom>("VideoRoom", VideoRoom);
+                                    const resultsWatchedItems = await updateCacheTable<"WatchedItems", Interface.WatchedItems>("WatchedItems", WatchedItems);
+                                    const resultsYouTubeFeed = await updateCacheTable<"YouTubeFeed", Interface.YouTubeFeed>("YouTubeFeed", YouTubeFeed);
+                                    const resultsZoomRoom = await updateCacheTable<"ZoomRoom", Interface.ZoomRoom>("ZoomRoom", ZoomRoom);
+
+                                    db.put("LocalRefillTimes", { id: "ENTIRE_CACHE", lastRefillAt: new Date(now) });
+
+                                    resolve({
+                                        Conference: resultConference,
+                                        AttachmentType: resultsAttachmentType,
+                                        ConferenceConfiguration: resultsConferenceConfiguration,
+                                        ContentFeed: resultsContentFeed,
+                                        Flair: resultsFlair,
+                                        PrivilegedConferenceDetails: resultsPrivilegedConferenceDetails,
+                                        ProgramPerson: resultsProgramPerson,
+                                        ProgramItem: resultsProgramItem,
+                                        ProgramItemAttachment: resultsProgramItemAttachment,
+                                        ProgramSession: resultsProgramSession,
+                                        ProgramSessionEvent: resultsProgramSessionEvent,
+                                        ProgramTrack: resultsProgramTrack,
+                                        Sponsor: resultsSponsor,
+                                        SponsorContent: resultsSponsorContent,
+                                        TextChat: resultsTextChat,
+                                        TextChatMessage: resultsTextChatMessage,
+                                        UserProfile: resultsUserProfile,
+                                        VideoRoom: resultsVideoRoom,
+                                        WatchedItems: resultsWatchedItems,
+                                        YouTubeFeed: resultsYouTubeFeed,
+                                        ZoomRoom: resultsZoomRoom,
+                                    });
+                                }
+                            }
+                            catch (e) {
+                                reject(e);
+                            }
+                            finally {
+                                this.fillingEntireCachePromise = null;
+                            }
+                        });
+
                         await Promise.all(CachedStoreNames.map(async store => {
                             try {
                                 await this.subscribeToUpdates(store);
-
-                                let localRefillTime = localRefillTimes[store] ?? new Date(0);
-                                let isProgramTable = this.ProgramTableNames.includes(store);
-                                let shouldUpdate =
-                                    forceRefill ||
-                                    (isProgramTable
-                                        ? remoteLastProgramUpdateTime.getTime() > localRefillTime.getTime() - 10000
-                                        : localRefillTime.getTime() + this.cacheInactiveTime < now);
-
-                                if (shouldUpdate) {
-                                    let shouldClear = forceRefill || localRefillTime.getTime() + this.cacheStaleTime < now;
-                                    let fillFrom = localRefillTimes[store];
-                                    if (shouldClear || isProgramTable) {
-                                        await db.clear(store);
-                                        fillFrom = new Date(0);
-                                    }
-
-                                    db.put("LocalRefillTimes", { id: store, lastRefillAt: new Date(now) });
-
-                                    return this.fillCache(store, db, fillFrom);
-                                }
-
-                                if (shouldUpdate || localRefillTime.getTime() + this.liveQueryTrustedTime > now) {
-                                    db.put("LocalRefillTimes", { id: store, lastRefillAt: new Date(now) });
-                                }
                             }
                             catch (e) {
                                 this.logger.error(`Could not update cache table ${store} for conference ${this.conferenceId}`, e);
                             }
-                            return void 0;
                         }));
+
+                        // await Promise.all(CachedStoreNames.map(async store => {
+                        //     try {
+                        //         await this.subscribeToUpdates(store);
+
+                        //         let localRefillTime = localRefillTimes[store] ?? new Date(0);
+                        //         let isProgramTable = this.ProgramTableNames.includes(store);
+                        //         let shouldUpdate =
+                        //             forceRefill ||
+                        //             (isProgramTable
+                        //                 ? remoteLastProgramUpdateTime.getTime() > localRefillTime.getTime() - 10000
+                        //                 : localRefillTime.getTime() + this.cacheInactiveTime < now);
+
+                        //         if (shouldUpdate) {
+                        //             let shouldClear = forceRefill || localRefillTime.getTime() + this.cacheStaleTime < now;
+                        //             let fillFrom = localRefillTimes[store];
+                        //             if (shouldClear || isProgramTable) {
+                        //                 await db.clear(store);
+                        //                 fillFrom = new Date(0);
+                        //             }
+
+                        //             db.put("LocalRefillTimes", { id: store, lastRefillAt: new Date(now) });
+
+                        //             return this.fillCache(store, db, fillFrom);
+                        //         }
+
+                        //         if (shouldUpdate || localRefillTime.getTime() + this.liveQueryTrustedTime > now) {
+                        //             db.put("LocalRefillTimes", { id: store, lastRefillAt: new Date(now) });
+                        //         }
+                        //     }
+                        //     catch (e) {
+                        //         this.logger.error(`Could not update cache table ${store} for conference ${this.conferenceId}`, e);
+                        //     }
+                        //     return void 0;
+                        // }));
                     }
                     catch (e) {
                         if (e.toString().includes("'LocalRefillTimes' is not a known object store name")) {
@@ -557,6 +675,30 @@ export default class Cache {
         }
     }
 
+    private fillingEntireCachePromise: Promise<{
+        Conference: Interface.Conference,
+        AttachmentType: Array<Interface.AttachmentType>,
+        ConferenceConfiguration: Array<Interface.ConferenceConfiguration>,
+        ContentFeed: Array<Interface.ContentFeed>,
+        Flair: Array<Interface.Flair>,
+        PrivilegedConferenceDetails: Array<Interface.PrivilegedConferenceDetails>,
+        ProgramPerson: Array<Interface.ProgramPerson>,
+        ProgramItem: Array<Interface.ProgramItem>,
+        ProgramItemAttachment: Array<Interface.ProgramItemAttachment>,
+        ProgramSession: Array<Interface.ProgramSession>,
+        ProgramSessionEvent: Array<Interface.ProgramSessionEvent>,
+        ProgramTrack: Array<Interface.ProgramTrack>,
+        Sponsor: Array<Interface.Sponsor>,
+        SponsorContent: Array<Interface.SponsorContent>,
+        TextChat: Array<Interface.TextChat>,
+        TextChatMessage: Array<Interface.TextChatMessage>,
+        UserProfile: Array<Interface.UserProfile>,
+        VideoRoom: Array<Interface.VideoRoom>,
+        WatchedItems: Array<Interface.WatchedItems>,
+        YouTubeFeed: Array<Interface.YouTubeFeed>,
+        ZoomRoom: Array<Interface.ZoomRoom>,
+    }> | null = null;
+
     private fillingCachePromises: { [K in CachedSchemaKeys]?: Promise<Array<any>> } = {};
     private async fillCache<K extends CachedSchemaKeys, T extends CachedBase<K>>(
         tableName: K,
@@ -571,49 +713,61 @@ export default class Cache {
             throw new Error("Cannot refresh cache when not authenticated");
         }
 
-        let resultP = this.fillingCachePromises[tableName];
-        if (!resultP) {
-            this.fillingCachePromises[tableName] = resultP = new Promise(async (resolve, reject) => {
-                try {
-                    if (!db && this.dbPromise) {
-                        db = await this.dbPromise;
-                    }
-
-                    let itemsQ = await this.newParseQuery(tableName);
-
-                    if (fillFrom) {
-                        itemsQ.greaterThanOrEqualTo("updatedAt", fillFrom as any);
-                    }
-
-                    let results: T[] = [];
-                    await itemsQ.eachBatch(async parseObjs => {
-                        const mapped = await Promise.all(parseObjs.map(parse => this.addItemToCache<K, T>(parse, tableName, true, db)));
-                        results = results.concat(mapped);
-                    }, {
-                        batchSize: 1000
-                    });
-
-                    if (db && fillFrom) {
-                        db.put("LocalRefillTimes", { id: tableName, lastRefillAt: new Date() });
-                    }
-
-                    let ev = this._onDataUpdated[tableName] as SimpleEventDispatcher<DataUpdatedEventDetails<K>>;
-                    ev.dispatchAsync({
-                        table: tableName,
-                        objects: results as CachedBase<K>[]
-                    });
-
-                    this.fillingCachePromises[tableName] = undefined;
-                    resolve(results);
+        if (this.fillingEntireCachePromise) {
+            return this.fillingEntireCachePromise.then(async r => {
+                if (tableName === "Conference") {
+                    return [r.Conference] as unknown[] as T[];
                 }
-                catch (e) {
-                    this.fillingCachePromises[tableName] = undefined;
-                    reject(e);
+                else {
+                    return r[tableName] as unknown[] as T[];
                 }
             });
         }
+        else {
+            let resultP = this.fillingCachePromises[tableName];
+            if (!resultP) {
+                this.fillingCachePromises[tableName] = resultP = new Promise(async (resolve, reject) => {
+                    try {
+                        if (!db && this.dbPromise) {
+                            db = await this.dbPromise;
+                        }
 
-        return resultP as Promise<Array<T>>;
+                        let itemsQ = await this.newParseQuery(tableName);
+
+                        if (fillFrom) {
+                            itemsQ.greaterThanOrEqualTo("updatedAt", fillFrom as any);
+                        }
+
+                        let results: T[] = [];
+                        await itemsQ.eachBatch(async parseObjs => {
+                            const mapped = await Promise.all(parseObjs.map(parse => this.addItemToCache<K, T>(parse, tableName, true, db)));
+                            results = results.concat(mapped);
+                        }, {
+                            batchSize: 1000
+                        });
+
+                        if (db && fillFrom) {
+                            db.put("LocalRefillTimes", { id: tableName, lastRefillAt: new Date() });
+                        }
+
+                        let ev = this._onDataUpdated[tableName] as SimpleEventDispatcher<DataUpdatedEventDetails<K>>;
+                        ev.dispatchAsync({
+                            table: tableName,
+                            objects: results as CachedBase<K>[]
+                        });
+
+                        this.fillingCachePromises[tableName] = undefined;
+                        resolve(results);
+                    }
+                    catch (e) {
+                        this.fillingCachePromises[tableName] = undefined;
+                        reject(e);
+                    }
+                });
+            }
+
+            return resultP as Promise<Array<T>>;
+        }
     }
 
     async addItemToCache<K extends CachedSchemaKeys, T extends CachedBase<K>>(

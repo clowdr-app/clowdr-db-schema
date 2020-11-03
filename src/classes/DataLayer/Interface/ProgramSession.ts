@@ -41,6 +41,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
     get feed(): Promise<ContentFeed> {
         return this.uniqueRelated("feed");
     }
+    
+    get feedId(): string {
+        return this.data.feed;
+    }
 
     get track(): Promise<ProgramTrack> {
         return this.uniqueRelated("track");

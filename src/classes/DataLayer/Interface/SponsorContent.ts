@@ -68,10 +68,15 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.uniqueRelated("sponsor");
     }
 
-    set sponsorId(value: string) {
-        this.data.sponsor = value;
-    }
+	get sponsorId(): string | undefined {
+		return this.data.sponsor;
+	}
 
+	set sponsorId(value: string | undefined) {
+		if (value) {
+			this.data.sponsor = value;
+		}
+	}
 
     get conference(): Promise<Conference> {
         return this.uniqueRelated("conference");

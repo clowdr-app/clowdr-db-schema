@@ -55,6 +55,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
     get textChat(): Promise<TextChat | undefined> {
         return this.uniqueRelated("textChat").catch(() => undefined);
     }
+	
+    get textChatId(): string | undefined {
+        return this.data.textChat;
+    }
 
     get feeds(): Promise<Array<ContentFeed>> {
         return StaticBaseImpl.getAllByField("ContentFeed", "videoRoom", this.id, this.conferenceId);

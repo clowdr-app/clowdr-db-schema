@@ -15,6 +15,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         super(conferenceId, K_str, data, parse);
     }
 
+    get originatingID(): string | undefined {
+        return this.data.originatingID;
+    }
+
     get abstract(): string {
         return this.data.abstract;
     }

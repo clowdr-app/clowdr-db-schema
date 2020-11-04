@@ -2,107 +2,135 @@ import { Conference, SponsorContent, UserProfile, VideoRoom } from ".";
 import { removeNull } from "../../Util";
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
-import { StaticCachedBase, StaticBaseImpl, LocalDataT, CachedBase } from "./Base";
+import {
+  StaticCachedBase,
+  StaticBaseImpl,
+  LocalDataT,
+  CachedBase,
+} from "./Base";
 
 type SchemaT = Schema.Sponsor;
 type K = "Sponsor";
 const K_str: K = "Sponsor";
 
 export default class Class extends CachedBase<K> implements SchemaT {
-    constructor(
-        conferenceId: string,
-        data: LocalDataT[K],
-        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null) {
-        super(conferenceId, K_str, data, parse);
-    }
+  constructor(
+    conferenceId: string,
+    data: LocalDataT[K],
+    parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null
+  ) {
+    super(conferenceId, K_str, data, parse);
+  }
 
-    get colour(): string {
-        return this.data.colour;
-    }
+  get colour(): string {
+    return this.data.colour;
+  }
 
-    set colour(value: string) {
-        this.data.colour = value;
-    }
+  set colour(value: string) {
+    this.data.colour = value;
+  }
 
-    get description(): string | undefined {
-        return this.data.description;
-    }
+  get description(): string | undefined {
+    return this.data.description;
+  }
 
-    set description(value: string | undefined) {
-        this.data.description = value;
-    }
+  set description(value: string | undefined) {
+    this.data.description = value;
+  }
 
-    get level(): number {
-        return this.data.level;
-    }
+  get level(): number {
+    return this.data.level;
+  }
 
-    set level(value: number) {
-        this.data.level = value;
-    }
+  set level(value: number) {
+    this.data.level = value;
+  }
 
-    get logo(): Parse.File | undefined {
-        return this.data.logo;
-    }
+  get logo(): Parse.File | undefined {
+    return this.data.logo;
+  }
 
-    set logo(value: Parse.File | undefined) {
-        this.data.logo = value;
-    }
+  set logo(value: Parse.File | undefined) {
+    this.data.logo = value;
+  }
 
-    get name(): string {
-        return this.data.name;
-    }
+  get name(): string {
+    return this.data.name;
+  }
 
-    set name(value: string) {
-        this.data.name = value;
-    }
+  set name(value: string) {
+    this.data.name = value;
+  }
 
-    get representativeProfileIds(): string[] {
-        return this.data.representativeProfileIds;
-    }
+  get representativeProfileIds(): string[] {
+    return this.data.representativeProfileIds;
+  }
 
-    set representativeProfileIds(value: string[]) {
-        this.data.representativeProfileIds = value;
-    }
+  set representativeProfileIds(value: string[]) {
+    this.data.representativeProfileIds = value;
+  }
 
-    get representativeProfiles(): Promise<Array<UserProfile>> {
-        return Promise.all(this.data.representativeProfileIds.map(id => UserProfile.get(id, this.conferenceId)) ?? []).then(removeNull);
-    }
+  get representativeProfiles(): Promise<Array<UserProfile>> {
+    return Promise.all(
+      this.data.representativeProfileIds.map((id) =>
+        UserProfile.get(id, this.conferenceId)
+      ) ?? []
+    ).then(removeNull);
+  }
 
-    get videoRoom(): Promise<VideoRoom | undefined> {
-        return this.uniqueRelated("videoRoom");
-    }
+  get videoRoom(): Promise<VideoRoom | undefined> {
+    return this.uniqueRelated("videoRoom");
+  }
 
-    get videoRoomId(): string | undefined {
-        return this.data.videoRoom;
-    }
+  get videoRoomId(): string | undefined {
+    return this.data.videoRoom;
+  }
 
-    set videoRoomId(value: string | undefined) {
-        this.data.videoRoom = value;
-    }
+  set videoRoomId(value: string | undefined) {
+    this.data.videoRoom = value;
+  }
 
-    get conference(): Promise<Conference> {
-        return this.uniqueRelated("conference");
-    }
+  get conference(): Promise<Conference> {
+    return this.uniqueRelated("conference");
+  }
 
-    get contents(): Promise<Array<SponsorContent>> {
-        return StaticBaseImpl.getAllByField("SponsorContent", "sponsor", this.id, this.conferenceId, true);
-    }
+  get contents(): Promise<Array<SponsorContent>> {
+    return StaticBaseImpl.getAllByField(
+      "SponsorContent",
+      "sponsor",
+      this.id,
+      this.conferenceId,
+      true
+    );
+  }
 
-    static get(id: string, conferenceId: string): Promise<Class | null> {
-        return StaticBaseImpl.get(K_str, id, conferenceId);
-    }
+  static get(id: string, conferenceId: string): Promise<Class | null> {
+    return StaticBaseImpl.get(K_str, id, conferenceId);
+  }
 
-    static getAll(conferenceId: string): Promise<Array<Class>> {
-        return StaticBaseImpl.getAll(K_str, conferenceId);
-    }
+  static getAll(conferenceId: string): Promise<Array<Class>> {
+    return StaticBaseImpl.getAll(K_str, conferenceId);
+  }
 
-    static onDataUpdated(conferenceId: string) {
-        return StaticBaseImpl.onDataUpdated(K_str, conferenceId);
-    }
+  static getAllByVideoRoom(
+    videoRoomId: string,
+    conferenceId: string
+  ): Promise<Array<Class>> {
+    return StaticBaseImpl.getAllByField(
+      K_str,
+      "videoRoom",
+      videoRoomId,
+      conferenceId
+    );
+  }
 
-    static onDataDeleted(conferenceId: string) {
-        return StaticBaseImpl.onDataDeleted(K_str, conferenceId);
-    }
+  static onDataUpdated(conferenceId: string) {
+    return StaticBaseImpl.onDataUpdated(K_str, conferenceId);
+  }
+
+  static onDataDeleted(conferenceId: string) {
+    return StaticBaseImpl.onDataDeleted(K_str, conferenceId);
+  }
 }
 
 // The line of code below triggers type-checking of Class for static members

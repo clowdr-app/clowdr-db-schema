@@ -1,4 +1,4 @@
-import { Conference, ProgramSession, ProgramSessionEvent, ProgramTrack, TextChat, UserProfile, VideoRoom } from ".";
+import { Conference, SponsorContent, UserProfile, VideoRoom } from ".";
 import { removeNull } from "../../Util";
 import * as Schema from "../Schema";
 import { PromisesRemapped } from "../WholeSchema";
@@ -82,6 +82,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get conference(): Promise<Conference> {
         return this.uniqueRelated("conference");
+    }
+
+    get contents(): Promise<Array<SponsorContent>> {
+        return StaticBaseImpl.getAllByField("SponsorContent", "sponsor", this.id, this.conferenceId, true);
     }
 
     static get(id: string, conferenceId: string): Promise<Class | null> {

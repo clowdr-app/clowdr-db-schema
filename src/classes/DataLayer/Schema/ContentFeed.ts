@@ -3,6 +3,7 @@ import { Conference, TextChat, VideoRoom, YouTubeFeed, ZoomRoom } from "../Inter
 
 export default interface Schema extends Base {
     name: string;
+    originatingID: string | undefined;
 
     conference: Promise<Conference>;
     textChat: Promise<TextChat | undefined>;

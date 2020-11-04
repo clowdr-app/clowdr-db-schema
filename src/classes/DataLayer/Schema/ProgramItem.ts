@@ -6,6 +6,7 @@ export default interface Schema extends Base {
     abstract: string;
     authors: Array<string> | undefined;
     exhibit: boolean;
+    originatingID: string | undefined;
     posterImage: Parse.File | undefined;
     title: string;
 

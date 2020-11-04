@@ -5,6 +5,7 @@ export default interface Schema extends Base {
     chair: string | undefined;
     directLink: string | undefined;
     endTime: Date;
+    originatingID: string | undefined;
     startTime: Date;
 
     conference: Promise<Conference>;

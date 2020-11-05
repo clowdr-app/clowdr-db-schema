@@ -988,8 +988,6 @@ export default class Cache {
         t.db.createObjectStore<K>(name, {
             keyPath: this.KEY_PATH
         });
-
-        // TODO: For 'find' (getByField / getAllByField) we will need to create indexes
     }
 
     private async upgradeStore(t: IDBPTransaction<ExtendedCachedSchema>, name: CachedSchemaKeys) {
@@ -1209,9 +1207,9 @@ export default class Cache {
             });
 
             if (this.isUserAuthenticated) {
-                let results = await this.fillCache(tableName) as any[];
+                let results = await this.fillCache<K, T>(tableName);
                 if (filterF) {
-                    results = results.filter(filterF);
+                    results = results.filter((x: any) => filterF(x.data));
                 }
                 return results;
             }

@@ -11,7 +11,8 @@ export default class Class extends CachedBase<K> implements SchemaT {
     constructor(
         conferenceId: string,
         data: LocalDataT[K],
-        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null) {
+        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null
+    ) {
         super(conferenceId, K_str, data, parse);
     }
 
@@ -24,8 +25,8 @@ export default class Class extends CachedBase<K> implements SchemaT {
     }
 
     get items(): Promise<ProgramItem[]> {
-        return StaticBaseImpl.getAll<"ProgramItem", ProgramItem>("ProgramItem", this.conferenceId).then(xs => {
-            return xs.filter(x => x.authors.includes(this.id));
+        return StaticBaseImpl.getAll<"ProgramItem", ProgramItem>("ProgramItem", this.conferenceId).then((xs) => {
+            return xs.filter((x) => x.authors.includes(this.id));
         });
     }
 
@@ -39,6 +40,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get profileId(): string | undefined {
         return this.data.profile;
+    }
+
+    set profileId(id: string | undefined) {
+        this.data.profile = id;
     }
 
     static get(id: string, conferenceId: string): Promise<Class | null> {

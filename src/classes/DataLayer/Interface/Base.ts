@@ -407,7 +407,7 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
                             this.parse.set(key as any, new Parse.Object(RelationsToTableNames[this.tableName][key as any], { id: targetId }) as any);
                         }
                         else {
-                            this.parse.set(key as any, undefined);
+                            this.parse.unset(key as any);
                         }
                     }
                     else {

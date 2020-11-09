@@ -11,12 +11,17 @@ export default class Class extends CachedBase<K> implements SchemaT {
     constructor(
         conferenceId: string,
         data: LocalDataT[K],
-        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null) {
+        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null
+    ) {
         super(conferenceId, K_str, data, parse);
     }
 
     get file(): Parse.File | undefined {
         return this.data.file;
+    }
+
+    set file(value) {
+        this.data.file = value;
     }
 
     get url(): string | undefined {
@@ -38,11 +43,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
     get attachmentType(): Promise<AttachmentType> {
         return this.uniqueRelated("attachmentType");
     }
-    
+
     get attachmentTypeId(): string {
         return this.data.attachmentType;
     }
-
 
     static get(id: string, conferenceId: string): Promise<Class | null> {
         return StaticBaseImpl.get(K_str, id, conferenceId);

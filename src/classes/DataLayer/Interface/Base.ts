@@ -437,8 +437,10 @@ export abstract class CachedBase<K extends CachedSchemaKeys> implements IBase<K>
                             this.parse.set(key as any, this.data[key]);
                         }
                     }
-                    else {
+                    else if (this.data[key] !== undefined) {
                         this.parse.set(key as any, this.data[key]);
+                    } else {
+                        this.parse.unset(key as any);
                     }
                 }
             }

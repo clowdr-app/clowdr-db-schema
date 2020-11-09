@@ -547,6 +547,9 @@ export default class Cache {
                                         ZoomRoom: resultsZoomRoom,
                                     });
                                 }
+                                else {
+                                    resolve(false);
+                                }
                             }
                             catch (e) {
                                 reject(e);
@@ -697,7 +700,7 @@ export default class Cache {
         WatchedItems: Array<Interface.WatchedItems>,
         YouTubeFeed: Array<Interface.YouTubeFeed>,
         ZoomRoom: Array<Interface.ZoomRoom>,
-    }> | null = null;
+    } | false> | null = null;
 
     private fillingCachePromises: { [K in CachedSchemaKeys]?: Promise<Array<any>> } = {};
     private async fillCache<K extends CachedSchemaKeys, T extends CachedBase<K>>(
@@ -713,17 +716,7 @@ export default class Cache {
             throw new Error("Cannot refresh cache when not authenticated");
         }
 
-        if (this.fillingEntireCachePromise) {
-            return this.fillingEntireCachePromise.then(async r => {
-                if (tableName === "Conference") {
-                    return [r.Conference] as unknown[] as T[];
-                }
-                else {
-                    return r[tableName] as unknown[] as T[];
-                }
-            });
-        }
-        else {
+        const forceFill = async () => {
             let resultP = this.fillingCachePromises[tableName];
             if (!resultP) {
                 this.fillingCachePromises[tableName] = resultP = new Promise(async (resolve, reject) => {
@@ -767,6 +760,25 @@ export default class Cache {
             }
 
             return resultP as Promise<Array<T>>;
+        };
+
+        if (this.fillingEntireCachePromise) {
+            return this.fillingEntireCachePromise.then(async r => {
+                if (!r) {
+                    return forceFill();
+                }
+                else {
+                    if (tableName === "Conference") {
+                        return [r.Conference] as unknown[] as T[];
+                    }
+                    else {
+                        return r[tableName] as unknown[] as T[];
+                    }
+                }
+            });
+        }
+        else {
+            return forceFill();
         }
     }
 

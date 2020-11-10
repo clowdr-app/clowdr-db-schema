@@ -16,16 +16,32 @@ export default class Class extends UncachedBase<K> implements SchemaT {
         return this.parse.get("affiliation");
     }
 
+    set affiliation(value) {
+        this.parse.set("affiliation", value);
+    }
+
     get country(): string | undefined {
         return this.parse.get("country");
+    }
+
+    set country(value) {
+        this.parse.set("country", value);
     }
 
     get email(): string {
         return this.parse.get("email");
     }
+
+    set email(value) {
+        this.parse.set("email", value);
+    }
     
     get newRole(): string {
         return this.parse.get("newRole");
+    }
+
+    set newRole(value) {
+        this.parse.set("newRole", value);
     }
 
     get invitationSentDate(): Date | undefined {
@@ -34,6 +50,10 @@ export default class Class extends UncachedBase<K> implements SchemaT {
 
     get name(): string {
         return this.parse.get("name");
+    }
+
+    set name(value) {
+        this.parse.set("name", value);
     }
 
     get conference(): Promise<Conference> {

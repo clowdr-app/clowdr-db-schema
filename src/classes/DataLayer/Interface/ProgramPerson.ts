@@ -24,6 +24,14 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.affiliation;
     }
 
+    get email(): string | undefined {
+        return this.data.email;
+    }
+
+    set email(value) {
+        this.data.email = value;
+    }
+
     get items(): Promise<ProgramItem[]> {
         return StaticBaseImpl.getAll<"ProgramItem", ProgramItem>("ProgramItem", this.conferenceId).then((xs) => {
             return xs.filter((x) => x.authors.includes(this.id));

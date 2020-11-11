@@ -51,6 +51,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.session;
     }
 
+    get feedId(): string | undefined {
+        return this.data.feed;
+    }
+
     get session(): Promise<ProgramSession> {
         return this.uniqueRelated("session");
     }

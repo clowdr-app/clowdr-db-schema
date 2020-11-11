@@ -251,7 +251,7 @@ export default class Cache {
 
     private logger: DebugLogger = new DebugLogger("Cache");
     private readonly cacheStaleTime = 1000 * 60 * 60 * 24; // 24 hours
-    private readonly cacheInactiveTime = 1000 * 60 * 60; // 60 minutes
+    private readonly cacheInactiveTime = 1000 * 60 * 10; // 10 minutes
     private readonly liveQueryTrustedTime = 1000 * 60 * 1; // 1 minutes
 
     private static parseLive: Parse.LiveQueryClient | null = null;
@@ -450,7 +450,8 @@ export default class Cache {
                         this.fillingEntireCachePromise = new Promise(async (resolve, reject) => {
                             try {
                                 let localRefillTime = localRefillTimes["ENTIRE_CACHE"] ?? new Date(0);
-                                if (localRefillTime.getTime() + this.cacheInactiveTime < now) {
+                                if (localRefillTime.getTime() + this.cacheInactiveTime < now
+                                    || remoteLastProgramUpdateTime.getTime() > now) {
                                     const {
                                         Conference,
 

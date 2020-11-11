@@ -66,6 +66,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
     get feed(): Promise<ContentFeed | undefined> {
         return this.uniqueRelated("feed").catch(() => undefined);
     }
+    
+    get feedId(): string | undefined {
+        return this.data.feed;
+    }
 
     get attachments(): Promise<ProgramItemAttachment[]> {
         return StaticBaseImpl.getAllByField("ProgramItemAttachment", "programItem", this.id, this.conferenceId);

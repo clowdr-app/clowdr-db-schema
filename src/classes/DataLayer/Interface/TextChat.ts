@@ -1,4 +1,4 @@
-import { Conference, UserProfile } from ".";
+import { Conference, UserProfile, VideoRoom } from ".";
 import * as Schema from "../Schema";
 import { TextChatModes } from "../Schema/TextChat";
 import { PromisesRemapped } from "../WholeSchema";
@@ -12,7 +12,8 @@ export default class Class extends CachedBase<K> implements SchemaT {
     constructor(
         conferenceId: string,
         data: LocalDataT[K],
-        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null) {
+        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null
+    ) {
         super(conferenceId, K_str, data, parse);
     }
 
@@ -39,7 +40,7 @@ export default class Class extends CachedBase<K> implements SchemaT {
     get mode(): TextChatModes {
         return this.data.mode;
     }
-    
+
     set mode(value) {
         this.data.mode = value;
     }
@@ -58,6 +59,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
 
     get conference(): Promise<Conference> {
         return this.uniqueRelated("conference");
+    }
+
+    get videoRooms(): Promise<Array<VideoRoom>> {
+        return StaticBaseImpl.getAllByField("VideoRoom", "textChat", this.id, this.conferenceId);
     }
 
     static get(id: string, conferenceId: string): Promise<Class | null> {

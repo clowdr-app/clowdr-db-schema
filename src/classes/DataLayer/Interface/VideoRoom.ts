@@ -12,7 +12,8 @@ export default class Class extends CachedBase<K> implements SchemaT {
     constructor(
         conferenceId: string,
         data: LocalDataT[K],
-        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null) {
+        parse: Parse.Object<PromisesRemapped<SchemaT>> | null = null
+    ) {
         super(conferenceId, K_str, data, parse);
     }
 
@@ -41,11 +42,11 @@ export default class Class extends CachedBase<K> implements SchemaT {
     }
 
     get participantProfiles(): Promise<Array<UserProfile>> {
-        return Promise.all(this.data.participants.map(id => UserProfile.get(id, this.conferenceId))).then(removeNull);
+        return Promise.all(this.data.participants.map((id) => UserProfile.get(id, this.conferenceId))).then(removeNull);
     }
 
     get userIdsWithAccess(): Array<string> {
-        return Object.keys(this.data.acl.permissionsById ?? {}).filter(x => !x.startsWith("role:"));
+        return Object.keys(this.data.acl.permissionsById ?? {}).filter((x) => !x.startsWith("role:"));
     }
 
     get conference(): Promise<Conference> {
@@ -55,7 +56,7 @@ export default class Class extends CachedBase<K> implements SchemaT {
     get textChat(): Promise<TextChat | undefined> {
         return this.uniqueRelated("textChat").catch(() => undefined);
     }
-	
+
     get textChatId(): string | undefined {
         return this.data.textChat;
     }

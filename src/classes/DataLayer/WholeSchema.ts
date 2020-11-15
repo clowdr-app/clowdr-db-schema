@@ -44,6 +44,9 @@ export type PromisesRemapped<T>
  * This copy is type-checked, so should be treated as the root of truth.
  */
 export const RelationsToTableNames: RelationsToTableNamesT = {
+    Analytics: {
+        conference: "Conference"
+    },
     AttachmentType: {
         conference: "Conference"
     },
@@ -55,6 +58,10 @@ export const RelationsToTableNames: RelationsToTableNamesT = {
     },
     ConferenceConfiguration: {
         conference: "Conference"
+    },
+    Errors: {
+        conference: "Conference",
+        user: "_User"
     },
     Flair: {
         conference: "Conference"

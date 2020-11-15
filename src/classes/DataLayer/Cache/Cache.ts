@@ -81,7 +81,9 @@ export default class Cache {
                 WatchedItems: Interface.WatchedItems,
                 AuditLog: Interface.AuditLog,
                 Sponsor: Interface.Sponsor,
-                SponsorContent: Interface.SponsorContent
+                SponsorContent: Interface.SponsorContent,
+                Analytics: Interface.Analytics,
+                Errors: Interface.Errors
             };
         }
         return Cache.constructors;

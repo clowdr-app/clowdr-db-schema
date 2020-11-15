@@ -1,9 +1,11 @@
 export { default as _Role } from "./_Role";
 export { default as _User } from "./_User";
+export { default as Analytics } from "./Analytics";
 export { default as AuditLog } from "./AuditLog";
 export { default as AttachmentType } from "./AttachmentType";
 export { default as Conference } from "./Conference";
 export { default as ConferenceConfiguration } from "./ConferenceConfiguration";
+export { default as Errors } from "./Errors";
 export { default as Flair } from "./Flair";
 export { default as PrivilegedConferenceDetails } from "./PrivilegedConferenceDetails";
 export { default as ProgramItem } from "./ProgramItem";

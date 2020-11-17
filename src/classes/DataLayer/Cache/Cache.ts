@@ -83,7 +83,8 @@ export default class Cache {
                 Sponsor: Interface.Sponsor,
                 SponsorContent: Interface.SponsorContent,
                 Analytics: Interface.Analytics,
-                Errors: Interface.Errors
+                Errors: Interface.Errors,
+                RouletteHistory: Interface.RouletteHistory
             };
         }
         return Cache.constructors;

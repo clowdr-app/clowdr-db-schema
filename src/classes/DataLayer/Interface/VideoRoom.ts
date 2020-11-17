@@ -21,6 +21,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return this.data.capacity;
     }
 
+    get mode(): string | undefined {
+        return this.data.mode;
+    }
+
     get ephemeral(): boolean {
         return this.data.ephemeral;
     }

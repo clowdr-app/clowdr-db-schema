@@ -17,6 +17,7 @@ export type { default as ProgramSession } from "./ProgramSession";
 export type { default as ProgramSessionEvent } from "./ProgramSessionEvent";
 export type { default as ProgramTrack } from "./ProgramTrack";
 export type { default as Registration } from "./Registration";
+export type { default as RouletteHistory } from "./RouletteHistory";
 export type { default as Sponsor } from "./Sponsor";
 export type { default as SponsorContent } from "./SponsorContent";
 export type { default as TextChat, TextChatModes } from "./TextChat";

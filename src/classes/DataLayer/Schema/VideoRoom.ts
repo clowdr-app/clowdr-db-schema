@@ -5,6 +5,7 @@ export default interface Schema extends Base {
     capacity: number;
     ephemeral: boolean;
     isPrivate: boolean;
+    mode: string | undefined;
     name: string;
     participants: Array<string>;
     twilioID: string | undefined;

@@ -34,4 +34,9 @@ export default interface UncachedSchema extends IDB.DBSchema {
         value: Schema._User;
         indexes: Indexes<Schema._User>;
     };
+    RouletteHistory: {
+        key: string;
+        value: Schema.RouletteHistory;
+        indexes: Indexes<Schema.RouletteHistory>;
+    };
 }

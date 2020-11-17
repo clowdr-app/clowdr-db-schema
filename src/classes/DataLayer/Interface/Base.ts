@@ -318,6 +318,24 @@ export abstract class StaticBaseImpl {
         }
     }
 
+    static async getAllFromCacheByFilter<
+        K extends CachedSchemaKeys,
+        T extends IBase<K>
+    >(
+        tableName: K,
+        filterF: (current: CachedSchema[K]["value"]) => boolean,
+        conferenceId: string
+    ): Promise<Array<T>> {
+        let results: Array<T> = [];
+        if (StaticBaseImpl.IsCachable(tableName, conferenceId)) {
+            const cache = await Caches.get(conferenceId);
+            if (cache.IsInitialised && cache.IsUserAuthenticated) {
+                results = await cache.getAllByFilter(tableName, filterF) as unknown as T[];
+            }
+        }
+        return results;
+    }
+
     static async onDataUpdated<K extends CachedSchemaKeys>(
         tableName: K,
         conferenceId: string

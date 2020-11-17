@@ -73,6 +73,10 @@ export default class Class extends CachedBase<K> implements SchemaT {
         return StaticBaseImpl.getAll(K_str, conferenceId);
     }
 
+    static getChatsMatchingFilter(conferenceId: string, filterF: (current: SchemaT) => boolean): Promise<Array<Class>> {
+        return StaticBaseImpl.getAllFromCacheByFilter(K_str, filterF, conferenceId);
+    }
+
     static onDataUpdated(conferenceId: string) {
         return StaticBaseImpl.onDataUpdated(K_str, conferenceId);
     }

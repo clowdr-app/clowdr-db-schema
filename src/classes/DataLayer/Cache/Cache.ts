@@ -1341,7 +1341,7 @@ export default class Cache {
         searchFor: LocalDataT[K][S]
     ): Promise<Array<T>> {
         // We should do this by defining indexes (within indexeddb) ideally...
-        function filterF(current: ExtendedCachedSchema[K]["value"]) {
+        function filterF(current: ExtendedCachedSchema[K]["value"]): boolean {
             if (!(fieldName in current)) {
                 return false;
             }
@@ -1374,6 +1374,16 @@ export default class Cache {
             }
             return false;
         }
+        return await this.getAllFromCache(tableName, filterF);
+    }
+
+    async getAllByFilter<
+        K extends CachedSchemaKeys,
+        T extends CachedBase<K>
+    >(
+        tableName: K,
+        filterF: (current: ExtendedCachedSchema[K]["value"]) => boolean
+    ): Promise<Array<T>> {
         return await this.getAllFromCache(tableName, filterF);
     }
 }
